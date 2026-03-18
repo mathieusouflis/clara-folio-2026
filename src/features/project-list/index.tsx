@@ -91,7 +91,7 @@ function ProjectPreview({
 					alt={"Category Image (not an alt)"}
 					width={1940}
 					height={1080}
-					className="w-full h-auto group-hover:opacity-50 transition-opacity duration-300"
+					className="w-full h-auto group-hover:opacity-50 transition-opacity duration-300 object-cover"
 				/>
 			</Link>
 		</GridItem>
