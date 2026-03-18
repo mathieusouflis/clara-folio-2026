@@ -24,7 +24,6 @@ export const Categories: CollectionConfig = {
 		],
 		afterChange: [
 			async ({ doc, req, operation, previousDoc, context }) => {
-				revalidatePath("/categories");
 				const categoryId = doc.id;
 				const newProjectIds = (doc.relatedProjects || []).map((p: any) =>
 					typeof p === "object" ? p.id : p,
@@ -67,6 +66,7 @@ export const Categories: CollectionConfig = {
 							});
 						}
 					} catch (error) {
+					  revalidatePath("/categories");
 						console.error(
 							`Error removing category from project ${projectId}:`,
 							error,
@@ -100,6 +100,7 @@ export const Categories: CollectionConfig = {
 							}
 						}
 					} catch (error) {
+					  revalidatePath("/categories");
 						console.error(
 							`Error adding category to project ${projectId}:`,
 							error,
@@ -135,6 +136,7 @@ export const Categories: CollectionConfig = {
 
 					doc.relatedProjects = sortedProjects;
 				}
+				revalidatePath("/categories");
 			},
 		],
 	},
