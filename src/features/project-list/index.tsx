@@ -1,23 +1,29 @@
 import { Play } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { getPayload } from "payload";
 import { Grid, GridItem } from "@/components/layout/grid";
-import config from "@/payload.config";
 import type { Category } from "@/payload-types";
 
 export async function ProjectListPage({ category }: { category: Category }) {
 	const projects =
-		category?.relatedProjects?.map(
-			(project) =>
-				typeof project !== "number" && {
-					...project,
-					imageUrl:
-						project.image &&
-						typeof project.image !== "number" &&
-						project.image.url,
-				},
-		) || [];
+		category?.relatedProjects
+			?.map(
+				(project) =>
+					typeof project !== "number" && {
+						...project,
+						imageUrl:
+							project.image &&
+							typeof project.image !== "number" &&
+							project.image.url,
+					},
+			)
+			.sort((a, b) => {
+				if (!a || !b) return 0;
+				if (!a.releaseDate && !b.releaseDate) return 0;
+				if (!a.releaseDate) return 1;
+				if (!b.releaseDate) return -1;
+				return a.releaseDate > b.releaseDate ? -1 : 1;
+			}) || [];
 
 	if (projects.length === 0)
 		return (
@@ -80,7 +86,7 @@ function ProjectPreview({
 	projectId: number;
 }) {
 	return (
-		<GridItem span={2} className="flex items-end">
+		<GridItem span={2} className="flex items-start">
 			<Link
 				href={`/categories/${categoryId}/${projectId}`}
 				className="relative group"

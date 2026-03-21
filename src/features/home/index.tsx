@@ -1,16 +1,24 @@
-import { getPayload } from 'payload'
-import config from '@/payload.config'
-import { HomePage } from './index-page'
+import { getPayload } from "payload";
+import config from "@/payload.config";
+import { HomePage } from "./index-page";
 
 export async function HomePageWrapper() {
-  const payloadConfig = await config
-  const payload = await getPayload({ config: payloadConfig })
-  const projects = await payload.find({
-    collection: 'projects',
-    limit: 24,
-  })
+	const payloadConfig = await config;
+	const payload = await getPayload({ config: payloadConfig });
+	const categories = await payload.find({
+		collection: "categories",
+		populate: {
+			projects: {
+				image: true,
+			},
+		},
+		limit: 0,
+	});
 
-  let projectsList = projects.docs || []
+	const categoriesList = categories.docs || [];
+	const projectsList = categoriesList
+		.flatMap((c) => c.showcasedProjects || [])
+		.filter((p) => typeof p !== "number");
 
-  return <HomePage projectsList={projectsList} />
+	return <HomePage projectsList={projectsList} />;
 }
