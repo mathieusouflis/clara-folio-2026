@@ -61,7 +61,7 @@ export async function AboutPage() {
       (hardSkillsCategories && hardSkillsCategories.length !== 0) ||
       (softSkills && softSkills.length !== 0) ||
       (languages && languages.length !== 0) ? (
-        <Grid className="min-h-screen gap-y-28! mt-28 md:mt-0">
+        <Grid className="min-h-screen gap-y-28! mt-28 md:mt-0 mb-10">
           {experiences && experiences.length !== 0 && (
             <GridItem
               start={2}
