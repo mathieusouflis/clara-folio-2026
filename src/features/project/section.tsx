@@ -46,7 +46,7 @@ export const ProjectSection = (props: {
 						alt={currentImage.alt}
 						width={currentImage.width || 1920}
 						height={currentImage.height || 1080}
-						className="w-fit h-max max-h-[calc(100%-120px)] object-cover aspect-18/24"
+						className="w-fit h-max max-h-[calc(100%-120px)] object-cover"
 					/>
 				)}
 				<div className="flex flex-row gap-2 min-h-fit h-30 overflow-y-scroll no-scrollbar">
@@ -58,7 +58,7 @@ export const ProjectSection = (props: {
 								width={image.width || 1920}
 								height={image.height || 1080}
 								onClick={() => setCurrentImage(image)}
-								className="aspect-18/24 h-30 w-fit object-cover"
+								className="h-30 w-fit object-cover"
 							/>
 						))}
 				</div>
