@@ -63,10 +63,12 @@ export const Projects: CollectionConfig = {
         }
       },
     ],
-    afterChange: [async ({ doc }) => {
-      revalidatePath("/categories")
-      return doc
-    }]
+    afterChange: [
+      async ({ doc }) => {
+        revalidatePath('/categories')
+        return doc
+      },
+    ],
   },
 
   fields: [
@@ -111,8 +113,15 @@ export const Projects: CollectionConfig = {
         },
         {
           name: 'contentDescription',
-          type: 'textarea',
+          type: 'array',
           required: true,
+          fields: [
+            {
+              name: 'text',
+              type: 'text',
+              required: true,
+            },
+          ],
         },
         {
           name: 'images',

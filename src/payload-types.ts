@@ -179,7 +179,10 @@ export interface Project {
   content?:
     | {
         title: string;
-        contentDescription: string;
+        contentDescription: {
+          text: string;
+          id?: string | null;
+        }[];
         images?: (number | Media)[] | null;
         id?: string | null;
       }[]
@@ -337,7 +340,12 @@ export interface ProjectsSelect<T extends boolean = true> {
     | T
     | {
         title?: T;
-        contentDescription?: T;
+        contentDescription?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
         images?: T;
         id?: T;
       };
