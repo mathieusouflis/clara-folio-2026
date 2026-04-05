@@ -57,7 +57,7 @@ export async function ProjectPage({
 						<div>
 							{project.content?.map((content, idx) => (
 								<Link
-									href={`#${content.id}`}
+                  href={`#${content.id}`}
 									key={idx}
 									className="flex flex-row justify-between border-b-2 p-3 border-blue-700 text-blue-700 font-bold"
 								>
@@ -73,7 +73,8 @@ export async function ProjectPage({
 					className="items-center justify-center p-[calc(2*var(--grid-margin))] hidden md:flex"
 				>
 					{project.image && typeof project.image === "object" && (
-						<Image
+            <Image
+              key={project.image.id}
 							src={project.image.url ?? ""}
 							alt={project.image.alt}
 							width={project.image.width || 1920}
