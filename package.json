@@ -22,6 +22,7 @@
     "@payloadcms/next": "3.75.0",
     "@payloadcms/richtext-lexical": "3.75.0",
     "@payloadcms/ui": "3.75.0",
+    "@sentry/nextjs": "^10.48.0",
     "@tailwindcss/postcss": "^4.1.18",
     "@tailwindcss/vite": "^4.1.18",
     "clsx": "^2.1.1",

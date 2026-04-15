@@ -24,10 +24,10 @@ export function HomePage({ projectsList }: { projectsList: Project[] }) {
 	}
 
 	// Define speeds for each column (in seconds for one full loop)
-	const speeds = [40, 60, 80, 90, 70, 50];
+  const speeds = [40, 60, 80, 90, 70, 50];
 
 	return (
-		<div className="relative">
+    <div className="relative">
 			<div className="absolute flex flex-col items-center top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 ">
 				<span className="relative">
 					<h1 className="font-aston-script text-6xl md:text-8xl lg:text-9xl text-white whitespace-nowrap">
