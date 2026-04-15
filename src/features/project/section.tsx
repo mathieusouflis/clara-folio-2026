@@ -41,6 +41,7 @@ export const ProjectSection = (props: { content: NonNullable<Project['content']>
       >
         {currentImage && (
           <Image
+            key={"header-" + currentImage.id}
             src={currentImage.url ?? ''}
             alt={currentImage.alt}
             width={currentImage.width || 1920}
@@ -52,6 +53,7 @@ export const ProjectSection = (props: { content: NonNullable<Project['content']>
           {contentImages.length > 1 &&
             contentImages.map((image) => (
               <Image
+                key={"content-" + image.id}
                 src={image.url ?? ''}
                 alt={image.alt}
                 width={image.width || 1920}
