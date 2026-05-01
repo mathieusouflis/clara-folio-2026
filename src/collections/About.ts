@@ -134,7 +134,7 @@ export const About: GlobalConfig = {
         {
           name: 'level',
           type: 'select',
-          options: ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'],
+          options: ['A1', 'A2', 'B1', 'B2', 'C1', 'C2', "Native"],
           required: true,
         },
       ],
