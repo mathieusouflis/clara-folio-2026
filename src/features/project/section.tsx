@@ -20,10 +20,10 @@ export const ProjectSection = (props: { content: NonNullable<Project['content']>
     <Grid key={content.id} as="section" id={content.id ?? ''}>
       <GridItem
         span={'full'}
-        className="px-(--grid-margin) py-32 flex flex-col justify-between md:h-screen md:col-span-6!"
+        className="px-(--grid-margin) py-12 md:py-32 flex flex-col justify-between md:h-screen md:col-span-6!"
       >
         <Grid columns={6} withGap={false} withMargins={false}>
-          <GridItem start={2} span={'full'} className="flex flex-col gap-12">
+          <GridItem span={'full'} className="flex flex-col gap-12 md:col-start-2!">
             <AnimatedSection y={20} duration={0.8} start="top 90%">
               <h1 className="opacity-60 text-white font-bold text-5xl">{content.title}</h1>
               <div className="flex flex-col gap-4 mt-12">
@@ -40,9 +40,15 @@ export const ProjectSection = (props: { content: NonNullable<Project['content']>
       </GridItem>
       <GridItem
         span={'full'}
-        className="relative flex flex-col gap-2 justify-start pt-32 items-center pb-20 px-[calc(2*var(--grid-margin))] h-screen w-full md:col-span-6!"
+        className="relative flex flex-col gap-2 justify-start pt-8 pb-16 items-center px-[calc(2*var(--grid-margin))] md:pt-32 md:pb-20 md:h-screen w-full md:col-span-6!"
       >
-        <AnimatedSection y={16} duration={0.9} delay={0.1} start="top 90%" className="w-fit h-max max-h-[calc(100%-120px)] flex items-center">
+        <AnimatedSection
+          y={16}
+          duration={0.9}
+          delay={0.1}
+          start="top 90%"
+          className="w-fit h-max max-h-[calc(100%-120px)] flex items-center"
+        >
           {currentImage && (
             <Image
               key={'header-' + currentImage.id}

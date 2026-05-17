@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useCallback } from 'react'
+import { useRef, useCallback, useEffect } from 'react'
 import { gsap } from 'gsap'
 import type { Category as PayloadCategory } from '@/payload-types'
 import { TransitionLink } from '@/components/layout/transition/TransitionLink'
@@ -17,6 +17,15 @@ export function Category({
   onHoverChange: (hovering: boolean) => void
 }) {
   const rowRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!rowRef.current) return
+    const mm = gsap.matchMedia()
+    mm.add('(hover: none)', () => {
+      gsap.set(rowRef.current, { opacity: 1 })
+    })
+    return () => mm.revert()
+  }, [])
 
   const handleEnter = useCallback(() => {
     onHoverChange(true)
@@ -36,7 +45,7 @@ export function Category({
       className="flex flex-row items-baseline gap-3 sm:gap-6 lg:gap-11 text-white relative z-10 py-1"
       // Mobile : opacité pleine (pas de hover sur touch)
       // Desktop : l'animation GSAP part de 0.7
-      style={{ opacity: 1 }}
+      style={{ opacity: 0.7 }}
       onMouseEnter={handleEnter}
       onMouseLeave={handleLeave}
     >

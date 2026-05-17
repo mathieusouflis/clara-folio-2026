@@ -49,6 +49,9 @@ export function TransitionOverlay() {
         duration: 0.7,
         delay: 0.1,
         ease: 'power3.inOut',
+        onComplete: () => {
+          window.dispatchEvent(new Event('resize'))
+        },
       })
       isFirst.current = false
       return
@@ -60,6 +63,9 @@ export function TransitionOverlay() {
       duration: 0.7,
       delay: 0.1,
       ease: 'power3.inOut',
+      onComplete: () => {
+        window.dispatchEvent(new Event('resize'))
+      },
     })
   }, [pathname])
 
