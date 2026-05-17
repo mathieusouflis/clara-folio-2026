@@ -27,28 +27,32 @@ export function Category({
   const handleLeave = useCallback(() => {
     onHoverChange(false)
     if (!rowRef.current) return
-    gsap.to(rowRef.current, { opacity: 0.6, duration: 0.25, ease: 'power2.out' })
+    gsap.to(rowRef.current, { opacity: 0.7, duration: 0.25, ease: 'power2.out' })
   }, [onHoverChange])
 
   return (
     <div
       ref={rowRef}
-      className="flex flex-row gap-11 text-white relative z-10"
-      style={{ opacity: 0.6 }}
+      className="flex flex-row items-baseline gap-3 sm:gap-6 lg:gap-11 text-white relative z-10 py-1"
+      // Mobile : opacité pleine (pas de hover sur touch)
+      // Desktop : l'animation GSAP part de 0.7
+      style={{ opacity: 1 }}
       onMouseEnter={handleEnter}
       onMouseLeave={handleLeave}
     >
-      <div className="flex flex-row gap-4">
-        <span className="text-4xl font-thin">
-          <i>{categoryNumber < 10 ? `0${categoryNumber}` : categoryNumber}</i>
-        </span>
-        <span>
-          <TransitionLink href={`/categories/${category.id}`} className="text-8xl">
-            {category.categoryName}
-          </TransitionLink>
-          <span>({projectsNumber})</span>
-        </span>
-      </div>
+      <span className="text-xl sm:text-2xl lg:text-4xl font-thin shrink-0 tabular-nums">
+        <i>{categoryNumber < 10 ? `0${categoryNumber}` : categoryNumber}</i>
+      </span>
+
+      <span className="flex items-baseline gap-1.5 min-w-0">
+        <TransitionLink
+          href={`/categories/${category.id}`}
+          className="text-3xl sm:text-5xl md:text-6xl lg:text-8xl leading-tight hover:opacity-100 transition-opacity"
+        >
+          {category.categoryName}
+        </TransitionLink>
+        <span className="text-sm sm:text-base opacity-60 shrink-0">({projectsNumber})</span>
+      </span>
     </div>
   )
 }

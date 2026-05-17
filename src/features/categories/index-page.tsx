@@ -31,7 +31,8 @@ export function CategoriesPageClient({
 
   return (
     <div className="min-h-screen flex flex-col justify-center relative">
-      <div className="fixed inset-0 z-0 pointer-events-none">
+      {/* ImageSwitcher visible uniquement sur desktop (feature hover) */}
+      <div className="fixed inset-0 z-0 pointer-events-none hidden md:block">
         {categoriesData.map((data, idx) => (
           <ImageSwitcher
             key={`image-${data.category.id}`}
@@ -41,9 +42,9 @@ export function CategoriesPageClient({
         ))}
       </div>
 
-      <Grid className="px-0 relative z-10">
+      <Grid className="px-0 relative z-10 py-24 md:py-0">
         <GridItem span={'full'} start={2}>
-          <div ref={listRef} className="flex flex-col">
+          <div ref={listRef} className="flex flex-col gap-2 sm:gap-1">
             {categoriesData.map((data, idx) => (
               <Category
                 key={data.category.id}

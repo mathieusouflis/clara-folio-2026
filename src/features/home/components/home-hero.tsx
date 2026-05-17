@@ -24,17 +24,20 @@ export function HomeHero() {
       <span className="relative">
         <h1
           ref={titleRef}
-          className="font-aston-script text-6xl md:text-8xl lg:text-9xl text-white whitespace-nowrap"
+          className="font-aston-script text-5xl sm:text-7xl md:text-8xl lg:text-9xl text-white whitespace-nowrap"
         >
           Portfolio
         </h1>
-        <p ref={nameRef} className="absolute -bottom-5 right-0 text-white text-xl uppercase">
+        <p
+          ref={nameRef}
+          className="absolute -bottom-4 right-0 text-white text-sm sm:text-base lg:text-xl uppercase tracking-widest"
+        >
           Clara Baptista
         </p>
-        <span ref={btnRef} className="absolute -bottom-52 left-1/2 -translate-x-1/2">
+        <span ref={btnRef} className="absolute -bottom-40 sm:-bottom-48 left-1/2 -translate-x-1/2">
           <TransitionLink
             href="/categories"
-            className="text-white px-16 py-4 text-[14px] border border-white hover:bg-white hover:text-black hover:border-white duration-300 font-semibold"
+            className="text-white px-10 sm:px-16 py-3 sm:py-4 text-[13px] sm:text-[14px] border border-white hover:bg-white hover:text-black duration-300 font-semibold whitespace-nowrap"
           >
             ENTER
           </TransitionLink>

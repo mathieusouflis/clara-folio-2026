@@ -1,0 +1,123 @@
+'use client'
+
+import { useEffect, useRef, useState } from 'react'
+import { usePathname } from 'next/navigation'
+import { gsap } from 'gsap'
+import { cn } from '@/lib/utils/cn'
+import { NavPathLink } from './nav-path-link'
+import { TransitionLink } from '@/components/layout/transition/TransitionLink'
+
+interface Page {
+  label: string
+  href: string
+}
+
+export function NavClient({ pages }: { pages: Page[] }) {
+  const [isOpen, setIsOpen] = useState(false)
+  const menuRef = useRef<HTMLDivElement>(null)
+  const linksRef = useRef<HTMLUListElement>(null)
+  const hasOpened = useRef(false)
+  const pathname = usePathname()
+
+  // Ferme le menu à chaque changement de page
+  useEffect(() => {
+    setIsOpen(false)
+  }, [pathname])
+
+  // Animation GSAP du menu
+  useEffect(() => {
+    if (!menuRef.current || !linksRef.current) return
+
+    if (isOpen) {
+      hasOpened.current = true
+      gsap.set(menuRef.current, { display: 'flex', opacity: 1 })
+      gsap.from(menuRef.current, { opacity: 0, duration: 0.25, ease: 'power2.out' })
+      gsap.from(Array.from(linksRef.current.children), {
+        y: 24,
+        opacity: 0,
+        stagger: 0.07,
+        duration: 0.5,
+        delay: 0.1,
+        ease: 'power3.out',
+      })
+    } else if (hasOpened.current) {
+      gsap.to(menuRef.current, {
+        opacity: 0,
+        duration: 0.2,
+        ease: 'power2.in',
+        onComplete: () => {
+          gsap.set(menuRef.current, { display: 'none' })
+        },
+      })
+    }
+  }, [isOpen])
+
+  return (
+    <>
+      <nav className="fixed flex items-center justify-between top-0 left-0 w-full px-(--grid-margin) py-3 z-[10000]">
+        {/* Logo mobile */}
+        <TransitionLink
+          href="/"
+          className="md:hidden text-white font-bold text-sm uppercase tracking-widest opacity-80 hover:opacity-100 transition-opacity"
+        >
+          CB
+        </TransitionLink>
+
+        {/* Liens desktop */}
+        <ul className="hidden md:flex flex-row gap-4 ml-auto">
+          {pages.map((page) => (
+            <NavPathLink key={page.href} href={page.href}>
+              {page.label}
+            </NavPathLink>
+          ))}
+        </ul>
+
+        {/* Bouton hamburger / fermer (mobile uniquement) */}
+        <button
+          className="md:hidden flex flex-col items-center justify-center gap-[5px] w-12 h-12 -mr-2"
+          onClick={() => setIsOpen((v) => !v)}
+          aria-label={isOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
+        >
+          <span
+            className={cn(
+              'block w-6 h-[1.5px] bg-white transition-all duration-300 origin-center',
+              isOpen && 'rotate-45 translate-y-[6.5px]',
+            )}
+          />
+          <span
+            className={cn(
+              'block w-6 h-[1.5px] bg-white transition-all duration-300',
+              isOpen && 'opacity-0',
+            )}
+          />
+          <span
+            className={cn(
+              'block w-6 h-[1.5px] bg-white transition-all duration-300 origin-center',
+              isOpen && '-rotate-45 -translate-y-[6.5px]',
+            )}
+          />
+        </button>
+      </nav>
+
+      {/* Overlay menu mobile */}
+      <div
+        ref={menuRef}
+        className="fixed inset-0 z-[9995] bg-[#0000ff] flex-col items-center justify-center"
+        style={{ display: 'none' }}
+      >
+        <ul ref={linksRef} className="flex flex-col items-center gap-10">
+          {pages.map((page) => (
+            <li key={page.href}>
+              <TransitionLink
+                href={page.href}
+                className="text-white text-4xl font-bold uppercase tracking-wide opacity-80 hover:opacity-100 transition-opacity"
+              >
+                {page.label}
+              </TransitionLink>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </>
+  )
+}
