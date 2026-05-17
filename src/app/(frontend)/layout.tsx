@@ -3,6 +3,8 @@ import './styles.css'
 import ReactLenis from 'lenis/react'
 import { MainLayout } from '@/components/layout/main'
 import { allFonts } from '@/lib/fonts'
+import { TransitionProvider } from '@/components/layout/transition/TransitionProvider'
+import { TransitionOverlay } from '@/components/layout/transition/TransitionOverlay'
 
 export const metadata = {
   title: 'Clara Baptista portfolio',
@@ -16,8 +18,11 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
   return (
     <html lang="en" className={fontVariables}>
       <body>
-        <ReactLenis root />
-        <MainLayout>{children}</MainLayout>
+        <TransitionProvider>
+          <TransitionOverlay />
+          <ReactLenis root />
+          <MainLayout>{children}</MainLayout>
+        </TransitionProvider>
       </body>
     </html>
   )

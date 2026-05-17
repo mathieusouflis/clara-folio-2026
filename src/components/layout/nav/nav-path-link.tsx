@@ -1,13 +1,13 @@
 'use client'
 
-import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils/cn'
+import { TransitionLink } from '@/components/layout/transition/TransitionLink'
 
 export function NavPathLink({ href, children }: { href: string; children: React.ReactNode }) {
   const path = usePathname()
   return (
-    <Link
+    <TransitionLink
       href={href}
       className={cn(
         'text-black md:text-white hover:opacity-100 opacity-60 font-bold uppercase text-[16px] duration-300',
@@ -15,6 +15,6 @@ export function NavPathLink({ href, children }: { href: string; children: React.
       )}
     >
       {children}
-    </Link>
+    </TransitionLink>
   )
 }
