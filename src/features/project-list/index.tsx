@@ -1,7 +1,6 @@
-import { Play } from 'lucide-react'
-import Image from 'next/image'
 import { Grid, GridItem } from '@/components/layout/grid'
 import { TransitionLink } from '@/components/layout/transition/TransitionLink'
+import { BlurImage } from '@/components/ui/blur-image'
 import type { Category } from '@/payload-types'
 
 // Responsive column layout :
@@ -12,11 +11,12 @@ const COL_COUNT = 6
 const colClass = (idx: number) => {
   // On mobile on réduit à 2 cols (masque 4 sur 6)
   // Sur tablette on réduit à 3 cols (masque 3 sur 6)
-  const hiddenOnMobile = idx >= 2   // cols 2-5 masquées sur mobile
-  const hiddenOnTablet = idx >= 3   // cols 3-5 masquées sur tablette
+  const hiddenOnMobile = idx >= 2 // cols 2-5 masquées sur mobile
+  const hiddenOnTablet = idx >= 3 // cols 3-5 masquées sur tablette
 
   if (hiddenOnTablet) return 'hidden lg:flex flex-col gap-(--grid-gap) lg:grid-span-2'
-  if (hiddenOnMobile) return 'hidden sm:flex flex-col gap-(--grid-gap) sm:grid-span-4 lg:grid-span-2'
+  if (hiddenOnMobile)
+    return 'hidden sm:flex flex-col gap-(--grid-gap) sm:grid-span-4 lg:grid-span-2'
   return 'flex flex-col gap-(--grid-gap) grid-span-6 sm:grid-span-4 lg:grid-span-2'
 }
 
@@ -27,8 +27,7 @@ export async function ProjectListPage({ category }: { category: Category }) {
         (project) =>
           typeof project !== 'number' && {
             ...project,
-            imageUrl:
-              project.image && typeof project.image !== 'number' && project.image.url,
+            imageUrl: project.image && typeof project.image !== 'number' && project.image.url,
           },
       )
       .sort((a, b) => {
@@ -51,6 +50,7 @@ export async function ProjectListPage({ category }: { category: Category }) {
           </h1>
           <TransitionLink
             href="/categories"
+            data-cursor="open"
             className="text-white px-12 py-4 min-h-[48px] flex items-center text-[14px] border border-white hover:bg-white hover:text-black duration-300 font-semibold"
           >
             GO BACK
@@ -97,10 +97,10 @@ function ProjectPreview({
   return (
     <TransitionLink
       href={`/categories/${categoryId}/${projectId}`}
+      data-cursor="view"
       className="relative group block min-h-[48px]"
     >
-      <Play className="group-hover:opacity-100 stroke-white w-8 opacity-0 duration-300 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10" />
-      <Image
+      <BlurImage
         src={imageUrl}
         alt={'Project preview'}
         width={1940}

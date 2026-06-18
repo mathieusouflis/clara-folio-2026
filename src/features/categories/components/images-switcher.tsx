@@ -4,13 +4,7 @@ import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 
-export function ImageSwitcher({
-  images,
-  hidden,
-}: {
-  images: string[]
-  hidden?: boolean
-}) {
+export function ImageSwitcher({ images, hidden }: { images: string[]; hidden?: boolean }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const imageRef = useRef<HTMLImageElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)

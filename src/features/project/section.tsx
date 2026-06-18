@@ -1,7 +1,7 @@
 'use client'
 
-import Image from 'next/image'
 import { useRef, useState } from 'react'
+import { BlurImage } from '@/components/ui/blur-image'
 import { Grid, GridItem } from '@/components/layout/grid'
 import { AnimatedSection } from '@/components/ui/animated-section'
 import type { Project } from '@/payload-types'
@@ -50,7 +50,7 @@ export const ProjectSection = (props: { content: NonNullable<Project['content']>
           className="w-fit h-max max-h-[calc(100%-120px)] flex items-center"
         >
           {currentImage && (
-            <Image
+            <BlurImage
               key={'header-' + currentImage.id}
               src={currentImage.url ?? ''}
               alt={currentImage.alt}
@@ -63,7 +63,7 @@ export const ProjectSection = (props: { content: NonNullable<Project['content']>
         <div className="flex flex-row gap-2 min-h-fit h-30 overflow-y-scroll no-scrollbar">
           {contentImages.length > 1 &&
             contentImages.map((image) => (
-              <Image
+              <BlurImage
                 key={'content-' + image.id}
                 src={image.url ?? ''}
                 alt={image.alt}

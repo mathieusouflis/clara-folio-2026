@@ -2,8 +2,8 @@
 
 import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
-import Image from 'next/image'
 import Link from 'next/link'
+import { BlurImage } from '@/components/ui/blur-image'
 import { Grid, GridItem } from '@/components/layout/grid'
 import type { Project } from '@/payload-types'
 
@@ -69,7 +69,7 @@ export function ProjectHeroClient({ project }: { project: Project }) {
           </h1>
           <div className="flex items-center justify-center py-8 md:hidden">
             {project.image && typeof project.image === 'object' && (
-              <Image
+              <BlurImage
                 src={project.image.url ?? ''}
                 alt={project.image.alt}
                 width={project.image.width || 1920}
@@ -98,7 +98,7 @@ export function ProjectHeroClient({ project }: { project: Project }) {
       >
         {project.image && typeof project.image === 'object' && (
           <div ref={imageRef} className="w-4/5">
-            <Image
+            <BlurImage
               key={project.image.id}
               src={project.image.url ?? ''}
               alt={project.image.alt}

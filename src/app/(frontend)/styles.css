@@ -19,6 +19,12 @@ body {
   background-color: #0000ff;
 }
 
+@media (pointer: fine) {
+  * {
+    cursor: none !important;
+  }
+}
+
 :root {
   --grid-columns: 12;
   --grid-gap: 12px;

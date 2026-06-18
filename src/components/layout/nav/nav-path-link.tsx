@@ -6,6 +6,7 @@ import { TransitionLink } from '@/components/layout/transition/TransitionLink'
 
 export function NavPathLink({ href, children }: { href: string; children: React.ReactNode }) {
   const path = usePathname()
+
   return (
     <TransitionLink
       href={href}

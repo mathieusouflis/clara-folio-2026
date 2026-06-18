@@ -5,6 +5,7 @@ import { MainLayout } from '@/components/layout/main'
 import { allFonts } from '@/lib/fonts'
 import { TransitionProvider } from '@/components/layout/transition/TransitionProvider'
 import { TransitionOverlay } from '@/components/layout/transition/TransitionOverlay'
+import { CustomCursor } from '@/components/ui/cursor'
 
 export const metadata = {
   title: 'Clara Baptista portfolio',
@@ -19,6 +20,7 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
     <html lang="en" className={fontVariables}>
       <body>
         <TransitionProvider>
+          <CustomCursor />
           <TransitionOverlay />
           <ReactLenis root />
           <MainLayout>{children}</MainLayout>
