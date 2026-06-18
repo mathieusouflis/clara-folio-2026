@@ -1,8 +1,8 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
-import Link from 'next/link'
+import { useLenis } from 'lenis/react'
 import { BlurImage } from '@/components/ui/blur-image'
 import { Grid, GridItem } from '@/components/layout/grid'
 import type { Project } from '@/payload-types'
@@ -26,6 +26,18 @@ export function ProjectHeroClient({ project }: { project: Project }) {
   const titleRef = useRef<HTMLHeadingElement>(null)
   const tocRef = useRef<HTMLDivElement>(null)
   const imageRef = useRef<HTMLDivElement>(null)
+  const lenis = useLenis()
+
+  const scrollToSection = useCallback(
+    (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+      e.preventDefault()
+      const target = document.getElementById(id)
+      if (!target) return
+      if (lenis) lenis.scrollTo(target, { duration: 1.2, easing: (t) => 1 - Math.pow(1 - t, 4) })
+      else target.scrollIntoView({ behavior: 'smooth' })
+    },
+    [lenis],
+  )
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -80,14 +92,15 @@ export function ProjectHeroClient({ project }: { project: Project }) {
           </div>
           <div ref={tocRef}>
             {project.content?.map((content, idx) => (
-              <Link
+              <a
                 href={`#${content.id}`}
                 key={idx}
+                onClick={(e) => scrollToSection(e, content.id ?? '')}
                 className="flex flex-row justify-between border-b-2 p-3 border-blue-700 text-blue-700 font-bold"
               >
                 <span>{content.title.toLocaleLowerCase()}</span>
                 <span>{idx + 1 > 10 ? idx + 1 : `0${idx + 1}`}</span>
-              </Link>
+              </a>
             ))}
           </div>
         </div>
