@@ -15,15 +15,10 @@ export function BlurImage({ ...props }: Props) {
     const skeleton = skeletonRef.current
     if (!img || !skeleton) return
 
-    if (img.complete) {
-      skeleton.style.display = 'none'
-      return
-    }
-
     img.style.opacity = '0'
     img.style.transition = 'opacity 0.7s ease-in-out'
 
-    const onLoad = () => {
+    const reveal = () => {
       img.style.opacity = '1'
       skeleton.style.transition = 'opacity 0.4s ease-in-out'
       skeleton.style.opacity = '0'
@@ -38,13 +33,24 @@ export function BlurImage({ ...props }: Props) {
       )
     }
 
-    img.addEventListener('load', onLoad)
-    return () => img.removeEventListener('load', onLoad)
+    // DEV: forced delay to inspect skeleton — swap the two lines below when done:
+    const timer = setTimeout(reveal, 3000)
+    return () => clearTimeout(timer)
+    // PROD: img.addEventListener('load', reveal); return () => img.removeEventListener('load', reveal)
   }, [])
+
+  const hasAspectClass = typeof props.className === 'string' && props.className.includes('aspect-')
 
   const wrapperStyle: React.CSSProperties = props.fill
     ? { position: 'absolute', inset: 0 }
-    : { position: 'relative' }
+    : {
+        position: 'relative',
+        // Pre-reserve exact space so skeleton matches image size before load.
+        // Skip when className already has an aspect-* override.
+        ...(!hasAspectClass && props.width && props.height
+          ? { aspectRatio: `${props.width} / ${props.height}` }
+          : {}),
+      }
 
   return (
     <div style={wrapperStyle}>

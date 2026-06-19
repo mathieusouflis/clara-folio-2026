@@ -49,22 +49,17 @@ export async function ProjectListPage({ category }: { category: Category }) {
       </GridItem>
       <GridItem span={'full'}>
         <div
-          className="columns-2 sm:columns-3 lg:columns-6"
-          style={{ columnGap: 'var(--grid-gap)' }}
+          className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6"
+          style={{ gap: 'var(--grid-gap)' }}
         >
           {projects.map((project, idx) =>
             project && project.imageUrl ? (
-              <div
+              <ProjectPreview
                 key={idx}
-                className="break-inside-avoid"
-                style={{ marginBottom: 'var(--grid-gap)' }}
-              >
-                <ProjectPreview
-                  categoryId={category.id}
-                  imageUrl={project.imageUrl}
-                  projectId={project.id}
-                />
-              </div>
+                categoryId={category.id}
+                imageUrl={project.imageUrl}
+                projectId={project.id}
+              />
             ) : null,
           )}
         </div>
