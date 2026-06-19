@@ -3,23 +3,6 @@ import { TransitionLink } from '@/components/layout/transition/TransitionLink'
 import { BlurImage } from '@/components/ui/blur-image'
 import type { Category } from '@/payload-types'
 
-// Responsive column layout :
-//   Mobile  (<sm):  2 colonnes → grid-span-6
-//   Tablet (sm-lg): 3 colonnes → grid-span-4
-//   Desktop (lg+):  6 colonnes → grid-span-2
-const COL_COUNT = 6
-const colClass = (idx: number) => {
-  // On mobile on réduit à 2 cols (masque 4 sur 6)
-  // Sur tablette on réduit à 3 cols (masque 3 sur 6)
-  const hiddenOnMobile = idx >= 2 // cols 2-5 masquées sur mobile
-  const hiddenOnTablet = idx >= 3 // cols 3-5 masquées sur tablette
-
-  if (hiddenOnTablet) return 'hidden lg:flex flex-col gap-(--grid-gap) lg:grid-span-2'
-  if (hiddenOnMobile)
-    return 'hidden sm:flex flex-col gap-(--grid-gap) sm:grid-span-4 lg:grid-span-2'
-  return 'flex flex-col gap-(--grid-gap) grid-span-6 sm:grid-span-4 lg:grid-span-2'
-}
-
 export async function ProjectListPage({ category }: { category: Category }) {
   const projects =
     category?.relatedProjects
@@ -64,23 +47,28 @@ export async function ProjectListPage({ category }: { category: Category }) {
       <GridItem span={'full'}>
         <h1 className="text-white text-4xl sm:text-6xl lg:text-8xl">{category?.categoryName}</h1>
       </GridItem>
-      {Array.from({ length: COL_COUNT }).map((_, columnIdx) => (
-        <GridItem key={`column-${columnIdx}`} className={colClass(columnIdx)}>
-          {projects
-            .map((project, idx) => ({ project, idx }))
-            .filter(({ idx }) => idx % COL_COUNT === columnIdx)
-            .map(({ project, idx }) =>
-              project && project.imageUrl ? (
+      <GridItem span={'full'}>
+        <div
+          className="columns-2 sm:columns-3 lg:columns-6"
+          style={{ columnGap: 'var(--grid-gap)' }}
+        >
+          {projects.map((project, idx) =>
+            project && project.imageUrl ? (
+              <div
+                key={idx}
+                className="break-inside-avoid"
+                style={{ marginBottom: 'var(--grid-gap)' }}
+              >
                 <ProjectPreview
                   categoryId={category.id}
                   imageUrl={project.imageUrl}
                   projectId={project.id}
-                  key={idx}
                 />
-              ) : null,
-            )}
-        </GridItem>
-      ))}
+              </div>
+            ) : null,
+          )}
+        </div>
+      </GridItem>
     </Grid>
   )
 }
