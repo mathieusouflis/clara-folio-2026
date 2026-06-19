@@ -81,13 +81,14 @@ function ProjectPreview({
     <TransitionLink
       href={`/categories/${categoryId}/${projectId}`}
       data-cursor="view"
-      className="relative group block min-h-[48px]"
+      className="relative group block"
     >
       <BlurImage
         src={imageUrl}
         alt={'Project preview'}
         width={1940}
         height={1080}
+        skeletonRatio={1.2}
         className="w-full h-auto group-hover:opacity-50 transition-opacity duration-300 object-cover"
       />
     </TransitionLink>

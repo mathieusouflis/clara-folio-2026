@@ -4,9 +4,11 @@ import Image from 'next/image'
 import { useEffect, useRef } from 'react'
 import type { ComponentProps } from 'react'
 
-type Props = ComponentProps<typeof Image>
+type Props = ComponentProps<typeof Image> & {
+  skeletonRatio?: number
+}
 
-export function BlurImage({ ...props }: Props) {
+export function BlurImage({ skeletonRatio, ...props }: Props) {
   const imgRef = useRef<HTMLImageElement>(null)
   const skeletonRef = useRef<HTMLDivElement>(null)
 
@@ -39,22 +41,18 @@ export function BlurImage({ ...props }: Props) {
     // PROD: img.addEventListener('load', reveal); return () => img.removeEventListener('load', reveal)
   }, [])
 
-  const hasAspectClass = typeof props.className === 'string' && props.className.includes('aspect-')
-
   const wrapperStyle: React.CSSProperties = props.fill
     ? { position: 'absolute', inset: 0 }
-    : {
-        position: 'relative',
-        // Pre-reserve exact space so skeleton matches image size before load.
-        // Skip when className already has an aspect-* override.
-        ...(!hasAspectClass && props.width && props.height
-          ? { aspectRatio: `${props.width} / ${props.height}` }
-          : {}),
-      }
+    : skeletonRatio
+    ? { position: 'relative', aspectRatio: `1 / ${skeletonRatio}` }
+    : { position: 'relative' }
 
   return (
     <div style={wrapperStyle}>
-      <div ref={skeletonRef} className="blur-image-skeleton absolute inset-0 z-10" />
+      <div
+        ref={skeletonRef}
+        className="blur-image-skeleton absolute inset-0 z-10"
+      />
       <Image ref={imgRef} {...props} />
     </div>
   )
