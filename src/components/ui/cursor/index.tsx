@@ -8,6 +8,9 @@ export function CustomCursor() {
   const ringRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
+    // Only run on devices with a precise pointer (mouse/trackpad), not touch/stylus
+    if (!window.matchMedia('(pointer: fine)').matches) return
+
     const dot = dotRef.current
     const ring = ringRef.current
     if (!dot || !ring) return
@@ -127,12 +130,12 @@ export function CustomCursor() {
     <>
       <div
         ref={dotRef}
-        className="fixed top-0 left-0 w-2 h-2 rounded-full bg-white pointer-events-none z-[99999]"
+        className="cursor-dot fixed top-0 left-0 w-2 h-2 rounded-full bg-white pointer-events-none z-[99999]"
         style={{ mixBlendMode: 'difference' }}
       />
       <div
         ref={ringRef}
-        className="fixed top-0 left-0 w-8 h-8 rounded-full border border-white pointer-events-none z-[99998]"
+        className="cursor-ring fixed top-0 left-0 w-8 h-8 rounded-full border border-white pointer-events-none z-[99998]"
         style={{ mixBlendMode: 'difference' }}
       />
     </>

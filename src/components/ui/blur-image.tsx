@@ -42,7 +42,6 @@ export function BlurImage({ ...props }: Props) {
     return () => img.removeEventListener('load', onLoad)
   }, [])
 
-  // fill images need an absolute wrapper so the skeleton covers the positioned parent
   const wrapperStyle: React.CSSProperties = props.fill
     ? { position: 'absolute', inset: 0 }
     : { position: 'relative' }
