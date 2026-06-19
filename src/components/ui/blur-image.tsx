@@ -21,6 +21,12 @@ export function BlurImage({ ...props }: Props) {
 
     const onLoad = () => {
       img.style.opacity = '1'
+      const onTransitionEnd = () => {
+        img.style.opacity = ''
+        img.style.transition = ''
+        img.removeEventListener('transitionend', onTransitionEnd)
+      }
+      img.addEventListener('transitionend', onTransitionEnd)
     }
     img.addEventListener('load', onLoad)
     return () => img.removeEventListener('load', onLoad)
