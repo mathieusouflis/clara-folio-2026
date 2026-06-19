@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import { BlurImage } from '@/components/ui/blur-image'
 import { getPayload } from 'payload'
 import { Grid, GridItem } from '@/components/layout/grid'
 import { AnimatedSection } from '@/components/ui/animated-section'
@@ -25,7 +25,7 @@ export async function AboutPage() {
           className="flex flex-col justify-center pt-20 md:pt-0 md:col-start-2! md:col-end-6!"
         >
           <AnimatedSection x={-30} y={0} duration={1} delay={0.3} mountOnly>
-            <Image
+            <BlurImage
               className="h-auto aspect-5/6 w-full max-h-[70vh] md:max-h-none object-cover"
               src={typeof aboutGlobal.image === 'number' ? '' : (aboutGlobal.image.url ?? '')}
               alt={typeof aboutGlobal.image === 'number' ? '' : aboutGlobal.image.alt}
@@ -59,13 +59,12 @@ export async function AboutPage() {
       </Grid>
 
       {/* ── Sections de données ──────────────────────────────── */}
-      {(experiences?.length ||
-        education?.length ||
-        hardSkillsCategories?.length ||
-        softSkills?.length ||
-        languages?.length) ? (
+      {experiences?.length ||
+      education?.length ||
+      hardSkillsCategories?.length ||
+      softSkills?.length ||
+      languages?.length ? (
         <Grid className="gap-y-20! md:gap-y-28! mt-16 md:mt-0 mb-16">
-
           {experiences && experiences.length !== 0 && (
             <GridItem start={2} end={12} span={'full'} className="flex flex-col gap-3">
               <AnimatedSection selector=":scope > *" stagger={0.06} y={15} duration={0.7}>
@@ -74,11 +73,16 @@ export async function AboutPage() {
                 </h2>
                 <div className="flex flex-col divide-y divide-white/10">
                   {experiences.map((exp, idx) => (
-                    <div key={`exp-${idx}`} className="flex flex-wrap gap-x-6 gap-y-0.5 py-2 text-white text-[14px] md:text-[16px]">
+                    <div
+                      key={`exp-${idx}`}
+                      className="flex flex-wrap gap-x-6 gap-y-0.5 py-2 text-white text-[14px] md:text-[16px]"
+                    >
                       <span className="shrink-0 opacity-60 tabular-nums w-28">
                         {exp.startYear} / {exp.endYear || 'now'}
                       </span>
-                      <span className="shrink-0 font-medium min-w-[120px]">{exp.enterpriseName}</span>
+                      <span className="shrink-0 font-medium min-w-[120px]">
+                        {exp.enterpriseName}
+                      </span>
                       <span className="flex-1 min-w-[140px]">{exp.jobPost}</span>
                       <span className="shrink-0 opacity-60 text-right">{exp.jobType}</span>
                     </div>
@@ -89,7 +93,12 @@ export async function AboutPage() {
           )}
 
           {education && education.length !== 0 && (
-            <GridItem start={2} end={12} span={'full'} className="md:col-start-7! flex flex-col gap-3">
+            <GridItem
+              start={2}
+              end={12}
+              span={'full'}
+              className="md:col-start-7! flex flex-col gap-3"
+            >
               <AnimatedSection selector=":scope > *" stagger={0.06} y={15} duration={0.7}>
                 <h2 className="text-white text-[13px] md:text-[16px] font-bold uppercase tracking-wider mb-2">
                   Education
@@ -102,7 +111,10 @@ export async function AboutPage() {
                       return b.endYear - a.endYear
                     })
                     .map((edu, idx) => (
-                      <div key={`edu-${idx}`} className="flex flex-wrap gap-x-6 gap-y-0.5 py-2 text-white text-[14px] md:text-[16px]">
+                      <div
+                        key={`edu-${idx}`}
+                        className="flex flex-wrap gap-x-6 gap-y-0.5 py-2 text-white text-[14px] md:text-[16px]"
+                      >
                         <span className="shrink-0 opacity-60 tabular-nums w-28">
                           {edu.startYear} / {edu.endYear || 'now'}
                         </span>
@@ -123,9 +135,14 @@ export async function AboutPage() {
                 </h2>
                 <div className="flex flex-col divide-y divide-white/10">
                   {hardSkillsCategories.map((cat, idx) => (
-                    <div key={`cat-${idx}`} className="flex flex-wrap gap-x-6 py-2 text-white text-[14px] md:text-[16px]">
+                    <div
+                      key={`cat-${idx}`}
+                      className="flex flex-wrap gap-x-6 py-2 text-white text-[14px] md:text-[16px]"
+                    >
                       <span className="shrink-0 font-medium w-28 md:w-36">{cat.categoryName}</span>
-                      <span className="flex-1 opacity-80">{cat.hardSkills?.map((s) => s.name).join(', ')}</span>
+                      <span className="flex-1 opacity-80">
+                        {cat.hardSkills?.map((s) => s.name).join(', ')}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -134,14 +151,22 @@ export async function AboutPage() {
           )}
 
           {softSkills && softSkills.length !== 0 && (
-            <GridItem start={2} end={12} span={'full'} className="md:col-start-7! flex flex-col gap-3">
+            <GridItem
+              start={2}
+              end={12}
+              span={'full'}
+              className="md:col-start-7! flex flex-col gap-3"
+            >
               <AnimatedSection selector=":scope > *" stagger={0.06} y={15} duration={0.7}>
                 <h2 className="text-white text-[13px] md:text-[16px] font-bold uppercase tracking-wider mb-2">
                   Soft skills
                 </h2>
                 <div className="flex flex-col divide-y divide-white/10">
                   {softSkills.map((skill, idx) => (
-                    <div key={`soft-${idx}`} className="flex justify-between gap-4 py-2 text-white text-[14px] md:text-[16px]">
+                    <div
+                      key={`soft-${idx}`}
+                      className="flex justify-between gap-4 py-2 text-white text-[14px] md:text-[16px]"
+                    >
                       <span>{skill.name}</span>
                       <span className="opacity-60 text-right">{skill.description}</span>
                     </div>
@@ -159,7 +184,10 @@ export async function AboutPage() {
                 </h2>
                 <div className="flex flex-col divide-y divide-white/10">
                   {languages.map((lang, idx) => (
-                    <div key={`lang-${idx}`} className="flex justify-between gap-4 py-2 text-white text-[14px] md:text-[16px]">
+                    <div
+                      key={`lang-${idx}`}
+                      className="flex justify-between gap-4 py-2 text-white text-[14px] md:text-[16px]"
+                    >
                       <span className="font-medium">{lang.name}</span>
                       <span className="opacity-70">{lang.level}</span>
                     </div>

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useCallback, useState } from 'react'
 import { gsap } from 'gsap'
-import Image from 'next/image'
+import { BlurImage } from '@/components/ui/blur-image'
 import { cn } from '@/lib/utils/cn'
 import type { Project, Media } from '@/payload-types'
 
@@ -176,7 +176,7 @@ export function InfiniteScrollColumn({
                 style={{ aspectRatio: '18 / 24' }}
               >
                 {imageUrl ? (
-                  <Image
+                  <BlurImage
                     src={imageUrl}
                     alt={project.name || 'Project image'}
                     fill
