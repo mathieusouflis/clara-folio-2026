@@ -35,24 +35,19 @@ export function BlurImage({ skeletonRatio, ...props }: Props) {
       )
     }
 
-    // DEV: forced delay to inspect skeleton — swap the two lines below when done:
-    const timer = setTimeout(reveal, 3000)
-    return () => clearTimeout(timer)
-    // PROD: img.addEventListener('load', reveal); return () => img.removeEventListener('load', reveal)
+    img.addEventListener('load', reveal)
+    return () => img.removeEventListener('load', reveal)
   }, [])
 
   const wrapperStyle: React.CSSProperties = props.fill
     ? { position: 'absolute', inset: 0 }
     : skeletonRatio
-    ? { position: 'relative', aspectRatio: `1 / ${skeletonRatio}` }
-    : { position: 'relative' }
+      ? { position: 'relative', aspectRatio: `1 / ${skeletonRatio}` }
+      : { position: 'relative' }
 
   return (
     <div style={wrapperStyle}>
-      <div
-        ref={skeletonRef}
-        className="blur-image-skeleton absolute inset-0 z-10"
-      />
+      <div ref={skeletonRef} className="blur-image-skeleton absolute inset-0 z-10" />
       <Image ref={imgRef} {...props} />
     </div>
   )
