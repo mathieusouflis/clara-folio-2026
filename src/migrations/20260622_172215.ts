@@ -140,6 +140,66 @@ export async function up({ db }: MigrateUpArgs): Promise<void> {
       ON "about_locales" USING btree ("_locale","_parent_id");
   `)
 
+  // Migrate existing English data into locale tables before dropping old columns.
+  // Each block checks that the source column still exists (safe for re-runs where
+  // dev-mode already dropped them).
+  await db.execute(sql`
+    DO $$ BEGIN
+      IF EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_name = 'projects' AND column_name = 'name'
+      ) THEN
+        INSERT INTO "projects_locales" ("name", "description", "meta_title", "meta_description", "meta_image_id", "_locale", "_parent_id")
+        SELECT
+          COALESCE("name", ''),
+          "description",
+          "meta_title",
+          "meta_description",
+          "meta_image_id",
+          'en',
+          "id"
+        FROM "projects"
+        ON CONFLICT ("_locale", "_parent_id") DO NOTHING;
+      END IF;
+    END $$;
+
+    DO $$ BEGIN
+      IF EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_name = 'projects_content' AND column_name = 'title'
+      ) THEN
+        INSERT INTO "projects_content_locales" ("title", "_locale", "_parent_id")
+        SELECT COALESCE("title", ''), 'en', "id"
+        FROM "projects_content"
+        ON CONFLICT ("_locale", "_parent_id") DO NOTHING;
+      END IF;
+    END $$;
+
+    DO $$ BEGIN
+      IF EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_name = 'projects_content_content_description' AND column_name = 'text'
+      ) THEN
+        INSERT INTO "projects_content_content_description_locales" ("text", "_locale", "_parent_id")
+        SELECT COALESCE("text", ''), 'en', "id"
+        FROM "projects_content_content_description"
+        ON CONFLICT ("_locale", "_parent_id") DO NOTHING;
+      END IF;
+    END $$;
+
+    DO $$ BEGIN
+      IF EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_name = 'about' AND column_name = 'description'
+      ) THEN
+        INSERT INTO "about_locales" ("description", "meta_title", "meta_description", "meta_image_id", "_locale", "_parent_id")
+        SELECT "description", "meta_title", "meta_description", "meta_image_id", 'en', "id"
+        FROM "about"
+        ON CONFLICT ("_locale", "_parent_id") DO NOTHING;
+      END IF;
+    END $$;
+  `)
+
   // Drop old non-locale columns (IF EXISTS handles dev-mode pre-push)
   await db.execute(sql`
     ALTER TABLE "projects_content_content_description" DROP COLUMN IF EXISTS "text";
