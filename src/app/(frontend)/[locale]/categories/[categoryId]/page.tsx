@@ -17,9 +17,12 @@ export async function generateMetadata({
       collection: 'categories',
       id: parseInt(categoryId),
     })
+    const ogUrl = `/api/og?type=Category&title=${encodeURIComponent(category.categoryName)}`
     return {
       title: `Clara Baptista — ${category.categoryName}`,
       alternates: { canonical: `/categories/${category.id}` },
+      openGraph: { images: [{ url: ogUrl, width: 1200, height: 630 }] },
+      twitter: { card: 'summary_large_image', images: [ogUrl] },
     }
   } catch {
     return { title: 'Clara Baptista — Graphic Designer' }

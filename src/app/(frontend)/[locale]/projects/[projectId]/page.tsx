@@ -25,7 +25,7 @@ export async function generateMetadata({
     openGraph: {
       images: [
         {
-          url: `/api/og?projectId=${project.id}`,
+          url: `/api/og?type=Project&projectId=${project.id}`,
           width: 1200,
           height: 630,
         },
@@ -33,7 +33,7 @@ export async function generateMetadata({
     },
     twitter: {
       card: 'summary_large_image',
-      images: [`/api/og?projectId=${project.id}`],
+      images: [`/api/og?type=Project&projectId=${project.id}`],
     },
   }
 }
