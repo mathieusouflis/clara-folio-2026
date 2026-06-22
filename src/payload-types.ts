@@ -210,6 +210,14 @@ export interface Category {
   relatedProjects?: (number | Project)[] | null;
   showcasedProjects?: (number | Project)[] | null;
   projectCount?: number | null;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -378,6 +386,13 @@ export interface CategoriesSelect<T extends boolean = true> {
   relatedProjects?: T;
   showcasedProjects?: T;
   projectCount?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }

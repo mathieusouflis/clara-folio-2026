@@ -17,7 +17,16 @@ export async function generateMetadata({
       collection: 'categories',
       id: parseInt(categoryId),
     })
-    return { title: `Clara Baptista — ${category.categoryName}` }
+    const defaultTitle = `Clara Baptista — ${category.categoryName}`
+    return {
+      title: category.meta?.title ?? defaultTitle,
+      description: category.meta?.description ?? undefined,
+      alternates: { canonical: `/categories/${category.id}` },
+      openGraph: {
+        title: category.meta?.title ?? defaultTitle,
+        description: category.meta?.description ?? undefined,
+      },
+    }
   } catch {
     return { title: 'Clara Baptista — Graphic Designer' }
   }
