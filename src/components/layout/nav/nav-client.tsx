@@ -107,6 +107,7 @@ export function NavClient() {
         ref={menuRef}
         className="fixed inset-0 z-[9995] bg-[#0000ff] flex-col items-center justify-center"
         style={{ display: 'none' }}
+        aria-hidden="true"
       >
         <ul ref={linksRef} className="flex flex-col items-center gap-10">
           {pages.map((page) => (
