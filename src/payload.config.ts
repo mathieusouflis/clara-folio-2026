@@ -15,7 +15,11 @@ import { seoPlugin } from '@payloadcms/plugin-seo'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
+const serverURL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://clarabaptista.com'
+
 export default buildConfig({
+  serverURL,
+  cors: [serverURL],
   admin: {
     user: Users.slug,
     importMap: {
