@@ -65,7 +65,7 @@ export function NavClient() {
           className="text-white opacity-80 hover:opacity-100 transition-opacity"
           aria-label="Clara Baptista — Home"
         >
-          <Logo className="h-7 w-auto" />
+          <Logo className="h-9 w-auto" />
         </TransitionLink>
 
         {/* Liens desktop */}
