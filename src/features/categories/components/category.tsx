@@ -55,7 +55,7 @@ export function Category({
 
       <span className="flex items-baseline gap-1.5 min-w-0">
         <TransitionLink
-          href={`/categories/${category.id}`}
+          href={`/categories/${category.slug ?? category.id}`}
           className="text-3xl sm:text-5xl md:text-6xl lg:text-8xl leading-tight hover:opacity-100 transition-opacity"
         >
           {category.categoryName}

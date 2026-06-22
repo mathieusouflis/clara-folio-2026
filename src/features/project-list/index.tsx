@@ -56,9 +56,8 @@ export async function ProjectListPage({ category }: { category: Category }) {
             project && project.imageUrl ? (
               <ProjectPreview
                 key={idx}
-                categoryId={category.id}
                 imageUrl={project.imageUrl}
-                projectId={project.id}
+                projectSlug={project.slug ?? String(project.id)}
               />
             ) : null,
           )}
@@ -68,18 +67,10 @@ export async function ProjectListPage({ category }: { category: Category }) {
   )
 }
 
-function ProjectPreview({
-  categoryId,
-  imageUrl,
-  projectId,
-}: {
-  categoryId: number
-  imageUrl: string
-  projectId: number
-}) {
+function ProjectPreview({ imageUrl, projectSlug }: { imageUrl: string; projectSlug: string }) {
   return (
     <TransitionLink
-      href={`/categories/${categoryId}/${projectId}`}
+      href={`/projects/${projectSlug}`}
       data-cursor="view"
       className="relative group block"
     >

@@ -19,8 +19,8 @@ const nextConfig = {
   async redirects() {
     return [
       {
-        source: '/categories/:categoryId/:projectId',
-        destination: '/projects/:projectId',
+        source: '/categories/:categorySlug/:projectSlug',
+        destination: '/projects/:projectSlug',
         permanent: true,
       },
     ]

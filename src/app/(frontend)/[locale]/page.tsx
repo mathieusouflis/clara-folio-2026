@@ -21,7 +21,7 @@ const personSchema = {
   name: 'Clara Baptista',
   jobTitle: 'Graphic Designer',
   url: 'https://clarabaptista.com',
-  sameAs: [],
+  sameAs: ['https://www.linkedin.com/in/clarabaptista', 'https://www.instagram.com/hhwgii'],
   address: {
     '@type': 'PostalAddress',
     addressLocality: 'Paris',

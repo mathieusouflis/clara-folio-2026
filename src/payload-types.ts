@@ -71,6 +71,7 @@ export interface Config {
     media: Media;
     projects: Project;
     categories: Category;
+    redirects: Redirect;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -82,6 +83,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
+    redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -172,6 +174,10 @@ export interface Media {
  */
 export interface Project {
   id: number;
+  /**
+   * URL-friendly identifier. Auto-generated from name.
+   */
+  slug?: string | null;
   name: string;
   description?: string | null;
   releaseDate?: string | null;
@@ -205,11 +211,33 @@ export interface Project {
  */
 export interface Category {
   id: number;
+  /**
+   * URL-friendly identifier. Auto-generated from category name.
+   */
+  slug?: string | null;
   priority?: number | null;
   categoryName: string;
   relatedProjects?: (number | Project)[] | null;
   showcasedProjects?: (number | Project)[] | null;
   projectCount?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "redirects".
+ */
+export interface Redirect {
+  id: number;
+  /**
+   * Old slug that should redirect.
+   */
+  from: string;
+  /**
+   * Current slug to redirect to.
+   */
+  to: string;
+  collectionType: 'project' | 'category';
   updatedAt: string;
   createdAt: string;
 }
@@ -252,6 +280,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'categories';
         value: number | Category;
+      } | null)
+    | ({
+        relationTo: 'redirects';
+        value: number | Redirect;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -340,6 +372,7 @@ export interface MediaSelect<T extends boolean = true> {
  * via the `definition` "projects_select".
  */
 export interface ProjectsSelect<T extends boolean = true> {
+  slug?: T;
   name?: T;
   description?: T;
   releaseDate?: T;
@@ -373,11 +406,23 @@ export interface ProjectsSelect<T extends boolean = true> {
  * via the `definition` "categories_select".
  */
 export interface CategoriesSelect<T extends boolean = true> {
+  slug?: T;
   priority?: T;
   categoryName?: T;
   relatedProjects?: T;
   showcasedProjects?: T;
   projectCount?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "redirects_select".
+ */
+export interface RedirectsSelect<T extends boolean = true> {
+  from?: T;
+  to?: T;
+  collectionType?: T;
   updatedAt?: T;
   createdAt?: T;
 }

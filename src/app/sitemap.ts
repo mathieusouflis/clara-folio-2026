@@ -37,21 +37,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ]
 
-  const categoryRoutes: MetadataRoute.Sitemap = categoriesRes.docs.map((category) => ({
-    url: `${BASE_URL}/categories/${category.id}`,
-    lastModified: new Date(category.updatedAt),
-    changeFrequency: 'weekly' as const,
-    priority: 0.7,
-    alternates: { languages: { fr: `${BASE_URL}/fr/categories/${category.id}` } },
-  }))
+  const categoryRoutes: MetadataRoute.Sitemap = categoriesRes.docs
+    .filter((category) => category.slug)
+    .map((category) => ({
+      url: `${BASE_URL}/categories/${category.slug}`,
+      lastModified: new Date(category.updatedAt),
+      changeFrequency: 'weekly' as const,
+      priority: 0.7,
+      alternates: { languages: { fr: `${BASE_URL}/fr/categories/${category.slug}` } },
+    }))
 
-  const projectRoutes: MetadataRoute.Sitemap = projectsRes.docs.map((project) => ({
-    url: `${BASE_URL}/projects/${project.id}`,
-    lastModified: new Date(project.updatedAt),
-    changeFrequency: 'monthly' as const,
-    priority: 0.9,
-    alternates: { languages: { fr: `${BASE_URL}/fr/projects/${project.id}` } },
-  }))
+  const projectRoutes: MetadataRoute.Sitemap = projectsRes.docs
+    .filter((project) => project.slug)
+    .map((project) => ({
+      url: `${BASE_URL}/projects/${project.slug}`,
+      lastModified: new Date(project.updatedAt),
+      changeFrequency: 'monthly' as const,
+      priority: 0.9,
+      alternates: { languages: { fr: `${BASE_URL}/fr/projects/${project.slug}` } },
+    }))
 
   return [...staticRoutes, ...categoryRoutes, ...projectRoutes]
 }

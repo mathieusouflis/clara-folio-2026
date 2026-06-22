@@ -1,6 +1,8 @@
 import { revalidatePath } from 'next/cache'
 import type { CollectionConfig } from 'payload'
 import { translateTexts } from '@/lib/deepl/translate'
+import { slugify, uniqueSlug } from '@/lib/slug'
+import { syncSlugRedirects } from '@/lib/syncSlugRedirects'
 
 export const Projects: CollectionConfig = {
   slug: 'projects',
@@ -14,6 +16,24 @@ export const Projects: CollectionConfig = {
   },
 
   hooks: {
+    beforeValidate: [
+      async ({ data, req, operation, originalDoc }) => {
+        if (!data) return data
+        if ((req.locale ?? 'en') !== 'en') return data
+        if (!data.slug && data.name) {
+          const base = slugify(data.name)
+          data.slug = await uniqueSlug(
+            req.payload,
+            'projects',
+            base,
+            operation === 'update' ? originalDoc?.id : undefined,
+          )
+        } else if (data.slug) {
+          data.slug = slugify(data.slug)
+        }
+        return data
+      },
+    ],
     beforeDelete: [
       async ({ req, id }) => {
         try {
@@ -65,6 +85,20 @@ export const Projects: CollectionConfig = {
       },
     ],
     afterChange: [
+      async ({ doc, req, operation, previousDoc }) => {
+        if (
+          operation === 'update' &&
+          previousDoc?.slug &&
+          doc.slug &&
+          previousDoc.slug !== doc.slug
+        ) {
+          try {
+            await syncSlugRedirects(req.payload, 'project', previousDoc.slug, doc.slug)
+          } catch (err) {
+            console.error('Failed to sync slug redirects:', err)
+          }
+        }
+      },
       async ({ doc, req, operation }) => {
         revalidatePath('/categories')
 
@@ -117,6 +151,16 @@ export const Projects: CollectionConfig = {
   },
 
   fields: [
+    {
+      name: 'slug',
+      type: 'text',
+      unique: true,
+      index: true,
+      admin: {
+        position: 'sidebar',
+        description: 'URL-friendly identifier. Auto-generated from name.',
+      },
+    },
     {
       name: 'name',
       type: 'text',

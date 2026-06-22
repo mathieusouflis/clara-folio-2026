@@ -10,6 +10,7 @@ import { Media } from './collections/Media'
 import { Projects } from './collections/Projects'
 import { Categories } from './collections/Categories'
 import { About } from './collections/About'
+import { Redirects } from './collections/Redirects'
 import { seoPlugin } from '@payloadcms/plugin-seo'
 
 const filename = fileURLToPath(import.meta.url)
@@ -32,7 +33,7 @@ export default buildConfig({
     fallback: true,
   },
   globals: [About],
-  collections: [Users, Media, Projects, Categories],
+  collections: [Users, Media, Projects, Categories, Redirects],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
@@ -54,7 +55,8 @@ export default buildConfig({
       generateDescription: ({ doc }) => doc.description,
       generateURL: ({ doc, collectionConfig }) => {
         const baseURL = 'https://clarabaptista.com'
-        if (collectionConfig?.slug === 'projects') return `${baseURL}/projects/${doc.id}`
+        if (collectionConfig?.slug === 'projects')
+          return `${baseURL}/projects/${doc.slug ?? doc.id}`
         return baseURL
       },
     }),

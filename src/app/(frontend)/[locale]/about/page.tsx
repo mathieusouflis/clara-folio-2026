@@ -37,5 +37,38 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Page() {
-  return <AboutPage />
+  const payloadConfig = await config
+  const payload = await getPayload({ config: payloadConfig })
+  const aboutGlobal = await payload.findGlobal({ slug: 'about', depth: 1 })
+
+  const img = aboutGlobal.image as Media | null
+  const rawImageUrl = img?.url
+    ? img.url.startsWith('http')
+      ? img.url
+      : `${BASE_URL}${img.url}`
+    : null
+
+  const personSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: 'Clara Baptista',
+    jobTitle: 'Graphic Designer',
+    url: 'https://clarabaptista.com',
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'Paris',
+      addressCountry: 'FR',
+    },
+    ...(rawImageUrl && { image: rawImageUrl }),
+  }
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
+      />
+      <AboutPage />
+    </>
+  )
 }
