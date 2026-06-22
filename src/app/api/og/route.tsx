@@ -17,7 +17,7 @@ async function fetchImageAsJpegDataUrl(imageUrl: string): Promise<string | null>
     if (!res.ok) return null
     const buffer = Buffer.from(await res.arrayBuffer())
     const jpeg = await sharp(buffer)
-      .resize(620, 630, { fit: 'cover' })
+      .resize(480, 480, { fit: 'contain', background: { r: 0, g: 0, b: 255, alpha: 1 } })
       .jpeg({ quality: 85 })
       .toBuffer()
     return `data:image/jpeg;base64,${jpeg.toString('base64')}`
@@ -64,8 +64,8 @@ export async function GET(request: Request) {
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 474.84 477.59"
-          width={52}
-          height={52}
+          width={72}
+          height={72}
           fill="rgba(255,255,255,0.4)"
         >
           <path d="M277.15,304.02c-8.7,3.67-19.61,7.14-22.99,16.01-3.79,9.93,7.28,18.47,17.97,18.22,27.96-.67,54.51-17.68,67.17-42.4,6.92-13.52-.44-26.74-12.37-32.79-13.9-7.05-27.52-5.63-43.99-7.4,21.84-17.31,50.55-17.61,72.57-4.85,24.59,14.25,32.41,43.23,17.5,67.78-17.19,28.3-47.94,47.75-81.8,48.98-30.18,1.1-59.09-14.44-70.68-41.05-4.75-10.9-2.75-22.28,3.14-30,6.14-8.05,16.66-12.01,27.8-9.85s19.54,8.83,25.67,17.35Z" />
@@ -79,11 +79,11 @@ export async function GET(request: Request) {
             <span
               style={{
                 color: 'rgba(255,255,255,0.5)',
-                fontSize: 12,
+                fontSize: 18,
                 fontWeight: 400,
-                letterSpacing: '0.22em',
+                letterSpacing: '0.18em',
                 textTransform: 'uppercase',
-                marginBottom: 20,
+                marginBottom: 24,
               }}
             >
               {pageType}
@@ -92,7 +92,7 @@ export async function GET(request: Request) {
           <span
             style={{
               color: '#ffffff',
-              fontSize: hasImage ? 52 : 80,
+              fontSize: hasImage ? 68 : 96,
               fontWeight: 700,
               lineHeight: 1.0,
               letterSpacing: hasImage ? '-0.01em' : '-0.02em',
@@ -105,16 +105,24 @@ export async function GET(request: Request) {
 
       {/* Right: project image */}
       {hasImage && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={imageSrc!}
-          alt=""
+        <div
           style={{
             flex: 1,
             height: '100%',
-            objectFit: 'cover',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
           }}
-        />
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={imageSrc!}
+            alt=""
+            width={480}
+            height={480}
+            style={{ width: 480, height: 480 }}
+          />
+        </div>
       )}
     </div>,
     {

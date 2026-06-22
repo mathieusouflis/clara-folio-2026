@@ -1,17 +1,39 @@
 import { AboutPage } from '@/features/about'
+import { getPayload } from 'payload'
+import config from '@/payload.config'
+import type { Media } from '@/payload-types'
 import type { Metadata } from 'next'
 
-export const metadata: Metadata = {
-  title: { absolute: 'About — Clara Baptista, Graphic Designer Paris' },
-  description:
-    'Clara Baptista is a freelance graphic designer based in Paris. Learn about her experience, education, and skills.',
-  openGraph: {
-    images: [{ url: 'https://clarabaptista.com/api/og?title=About', width: 1200, height: 630 }],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    images: ['https://clarabaptista.com/api/og?title=About'],
-  },
+const BASE_URL = 'https://clarabaptista.com'
+
+export async function generateMetadata(): Promise<Metadata> {
+  const payloadConfig = await config
+  const payload = await getPayload({ config: payloadConfig })
+  const aboutGlobal = await payload.findGlobal({ slug: 'about' })
+
+  const img = aboutGlobal.image as Media | null
+  const rawImageUrl = img?.url
+    ? img.url.startsWith('http')
+      ? img.url
+      : `${BASE_URL}${img.url}`
+    : null
+
+  const ogParams = new URLSearchParams({ title: 'About' })
+  if (rawImageUrl) ogParams.set('imageUrl', rawImageUrl)
+  const ogUrl = `${BASE_URL}/api/og?${ogParams.toString()}`
+
+  return {
+    title: { absolute: 'About — Clara Baptista, Graphic Designer Paris' },
+    description:
+      'Clara Baptista is a freelance graphic designer based in Paris. Learn about her experience, education, and skills.',
+    openGraph: {
+      images: [{ url: ogUrl, width: 1200, height: 630 }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      images: [ogUrl],
+    },
+  }
 }
 
 export default async function Page() {
