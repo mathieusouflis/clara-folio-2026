@@ -16,9 +16,9 @@ export async function generateMetadata({
     where: { id: { equals: projectId } },
   })
   const project = projects.docs[0]
-  if (!project) return { title: 'Clara Baptista — Graphic Designer' }
+  if (!project) return { title: 'Graphic Designer' }
   return {
-    title: project.meta?.title ?? `Clara Baptista — ${project.name}`,
+    title: project.meta?.title ?? project.name,
     description: project.meta?.description ?? project.description,
   }
 }

@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://clarabaptista.com'),
   title: {
     default: 'Clara Baptista — Graphic Designer Paris',
-    template: '%s — Clara Baptista',
+    template: 'Clara Baptista — %s',
   },
   description:
     'Clara Baptista is a freelance graphic designer based in Paris, specialising in branding, visual identity, and print design.',

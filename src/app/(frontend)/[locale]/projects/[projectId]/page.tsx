@@ -21,9 +21,9 @@ export async function generateMetadata({
     depth: 1,
   })
   const project = projects.docs[0]
-  if (!project) return { title: 'Clara Baptista — Graphic Designer' }
+  if (!project) return { title: 'Graphic Designer' }
 
-  const title = (project.meta?.title ?? project.name ?? '').replace(/^Clara Baptista — /, '')
+  const title = project.meta?.title ?? project.name ?? ''
   const img = project.image as Media | null
   const rawImageUrl = img?.url
     ? img.url.startsWith('http')
@@ -36,7 +36,7 @@ export async function generateMetadata({
   const ogUrl = `${BASE_URL}/api/og?${ogParams.toString()}`
 
   return {
-    title: project.meta?.title ?? `Clara Baptista — ${project.name}`,
+    title,
     description: project.meta?.description ?? project.description,
     alternates: { canonical: `/projects/${project.id}` },
     openGraph: { images: [{ url: ogUrl, width: 1200, height: 630 }] },
