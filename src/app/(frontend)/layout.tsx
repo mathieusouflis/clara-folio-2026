@@ -1,5 +1,6 @@
 import type React from 'react'
 import type { Metadata } from 'next'
+import Script from 'next/script'
 import './styles.css'
 import ReactLenis from 'lenis/react'
 import { MainLayout } from '@/components/layout/main'
@@ -34,9 +35,22 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
 
   const fontVariables = allFonts.map((font) => font.variable).join(' ')
 
+  const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
+
   return (
     <html lang="en" className={fontVariables}>
       <body>
+        {gaId && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
+              strategy="afterInteractive"
+            />
+            <Script id="ga4-init" strategy="afterInteractive">
+              {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${gaId}');`}
+            </Script>
+          </>
+        )}
         <TransitionProvider>
           <CustomCursor />
           <TransitionOverlay />
