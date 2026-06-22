@@ -17,7 +17,7 @@ export async function generateMetadata({
       collection: 'categories',
       id: parseInt(categoryId),
     })
-    const ogUrl = `/api/og?type=Category&title=${encodeURIComponent(category.categoryName)}`
+    const ogUrl = `https://clarabaptista.com/api/og?type=Category&title=${encodeURIComponent(category.categoryName)}`
     return {
       title: `Clara Baptista — ${category.categoryName}`,
       alternates: { canonical: `/categories/${category.id}` },

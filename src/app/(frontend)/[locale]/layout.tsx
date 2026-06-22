@@ -25,11 +25,13 @@ export const metadata: Metadata = {
     siteName: 'Clara Baptista',
     locale: 'en_US',
     type: 'website',
-    images: [{ url: '/api/og?type=Home', width: 1200, height: 630 }],
+    images: [
+      { url: 'https://clarabaptista.com/api/og?title=Graphic+Designer', width: 1200, height: 630 },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
-    images: ['/api/og?type=Home'],
+    images: ['https://clarabaptista.com/api/og?title=Graphic+Designer'],
   },
 }
 
