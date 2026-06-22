@@ -80,7 +80,7 @@ export async function GET(request: Request) {
               style={{
                 color: 'rgba(255,255,255,0.5)',
                 fontSize: 18,
-                fontWeight: 400,
+                fontWeight: 600,
                 letterSpacing: '0.18em',
                 textTransform: 'uppercase',
                 marginBottom: 24,
