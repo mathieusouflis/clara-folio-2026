@@ -10,6 +10,7 @@ import { Media } from './collections/Media'
 import { Projects } from './collections/Projects'
 import { Categories } from './collections/Categories'
 import { About } from './collections/About'
+import { seoPlugin } from '@payloadcms/plugin-seo'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -34,5 +35,21 @@ export default buildConfig({
     },
   }),
   sharp,
-  plugins: [],
+  plugins: [
+    seoPlugin({
+      collections: ['projects'],
+      globals: ['about'],
+      uploadsCollection: 'media',
+      tabbedUI: true,
+      generateTitle: ({ doc }) => `Clara Baptista — ${doc.name}`,
+      generateDescription: ({ doc }) => doc.description,
+      generateURL: ({ doc, collectionConfig }) => {
+        const baseURL = 'https://clarabaptista.com'
+        if (collectionConfig?.slug === 'projects') {
+          return `${baseURL}/projects/${doc.id}`
+        }
+        return baseURL
+      },
+    }),
+  ],
 })
