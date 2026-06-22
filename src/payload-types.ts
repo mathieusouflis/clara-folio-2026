@@ -174,9 +174,6 @@ export interface Media {
  */
 export interface Project {
   id: number;
-  /**
-   * URL-friendly identifier. Auto-generated from name.
-   */
   slug?: string | null;
   name: string;
   description?: string | null;
@@ -211,9 +208,6 @@ export interface Project {
  */
 export interface Category {
   id: number;
-  /**
-   * URL-friendly identifier. Auto-generated from category name.
-   */
   slug?: string | null;
   priority?: number | null;
   categoryName: string;

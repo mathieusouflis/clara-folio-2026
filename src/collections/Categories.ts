@@ -165,7 +165,10 @@ export const Categories: CollectionConfig = {
       unique: true,
       index: true,
       admin: {
-        description: 'URL-friendly identifier. Auto-generated from category name.',
+        position: 'sidebar',
+        components: {
+          Field: '@/components/admin/SlugField',
+        },
       },
     },
     {

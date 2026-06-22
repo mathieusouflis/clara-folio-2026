@@ -158,7 +158,9 @@ export const Projects: CollectionConfig = {
       index: true,
       admin: {
         position: 'sidebar',
-        description: 'URL-friendly identifier. Auto-generated from name.',
+        components: {
+          Field: '@/components/admin/SlugField',
+        },
       },
     },
     {
