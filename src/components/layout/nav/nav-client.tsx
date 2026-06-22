@@ -7,6 +7,7 @@ import { gsap } from 'gsap'
 import { cn } from '@/lib/utils/cn'
 import { NavPathLink } from './nav-path-link'
 import { TransitionLink } from '@/components/layout/transition/TransitionLink'
+import { Logo } from '@/components/ui/logo'
 
 export function NavClient() {
   const t = useTranslations('nav')
@@ -58,12 +59,13 @@ export function NavClient() {
   return (
     <>
       <nav className="fixed flex items-center justify-between top-0 left-0 w-full px-(--grid-margin) py-3 z-[10000]">
-        {/* Logo mobile */}
+        {/* Logo */}
         <TransitionLink
           href="/"
-          className="md:hidden text-white font-bold text-sm uppercase tracking-widest opacity-80 hover:opacity-100 transition-opacity"
+          className="text-white opacity-80 hover:opacity-100 transition-opacity"
+          aria-label="Clara Baptista — Home"
         >
-          CB
+          <Logo className="h-7 w-auto" />
         </TransitionLink>
 
         {/* Liens desktop */}
@@ -77,7 +79,7 @@ export function NavClient() {
 
         {/* Bouton hamburger / fermer (mobile uniquement) */}
         <button
-          className="md:hidden flex flex-col items-center justify-center gap-[5px] w-12 h-12 -mr-2"
+          className="flex md:hidden flex-col items-center justify-center gap-[5px] w-12 h-12 -mr-2"
           onClick={() => setIsOpen((v) => !v)}
           aria-label={isOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
         >
