@@ -46,19 +46,15 @@ export default buildConfig({
   sharp,
   plugins: [
     seoPlugin({
-      collections: ['projects', 'categories'],
+      collections: ['projects'],
       globals: ['about'],
       uploadsCollection: 'media',
       tabbedUI: true,
-      generateTitle: ({ doc, collectionConfig }) => {
-        if (collectionConfig?.slug === 'categories') return `Clara Baptista — ${doc.categoryName}`
-        return `Clara Baptista — ${doc.name}`
-      },
+      generateTitle: ({ doc }) => `Clara Baptista — ${doc.name}`,
       generateDescription: ({ doc }) => doc.description,
       generateURL: ({ doc, collectionConfig }) => {
         const baseURL = 'https://clarabaptista.com'
         if (collectionConfig?.slug === 'projects') return `${baseURL}/projects/${doc.id}`
-        if (collectionConfig?.slug === 'categories') return `${baseURL}/categories/${doc.id}`
         return baseURL
       },
     }),
