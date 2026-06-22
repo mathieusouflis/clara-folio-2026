@@ -1,6 +1,7 @@
 import { ImageResponse } from 'next/og'
 import fs from 'fs'
 import path from 'path'
+import sharp from 'sharp'
 
 export const runtime = 'nodejs'
 
@@ -10,14 +11,31 @@ function loadFonts() {
   return { regular, bold }
 }
 
+async function fetchImageAsJpegDataUrl(imageUrl: string): Promise<string | null> {
+  try {
+    const res = await fetch(imageUrl)
+    if (!res.ok) return null
+    const buffer = Buffer.from(await res.arrayBuffer())
+    const jpeg = await sharp(buffer)
+      .resize(620, 630, { fit: 'cover' })
+      .jpeg({ quality: 85 })
+      .toBuffer()
+    return `data:image/jpeg;base64,${jpeg.toString('base64')}`
+  } catch {
+    return null
+  }
+}
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const title = searchParams.get('title') ?? 'Graphic Designer'
   const pageType = searchParams.get('type') // 'Project' | 'Category' | null
-  const imageUrl = searchParams.get('imageUrl') // absolute URL, only for projects
+  const rawImageUrl = searchParams.get('imageUrl') // absolute URL, only for projects
 
   const { regular, bold } = loadFonts()
-  const hasImage = Boolean(imageUrl)
+
+  const imageSrc = rawImageUrl ? await fetchImageAsJpegDataUrl(rawImageUrl) : null
+  const hasImage = Boolean(imageSrc)
 
   return new ImageResponse(
     <div
@@ -89,7 +107,7 @@ export async function GET(request: Request) {
       {hasImage && (
         // eslint-disable-next-line @next/next/no-img-element
         <img
-          src={imageUrl!}
+          src={imageSrc!}
           alt=""
           style={{
             flex: 1,
