@@ -2,17 +2,20 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { usePathname } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { gsap } from 'gsap'
 import { cn } from '@/lib/utils/cn'
 import { NavPathLink } from './nav-path-link'
 import { TransitionLink } from '@/components/layout/transition/TransitionLink'
 
-interface Page {
-  label: string
-  href: string
-}
-
-export function NavClient({ pages }: { pages: Page[] }) {
+export function NavClient() {
+  const t = useTranslations('nav')
+  const pages = [
+    { label: t('home'), href: '/' },
+    { label: t('projects'), href: '/categories' },
+    { label: t('about'), href: '/about' },
+    { label: t('contact'), href: 'mailto:contact@clarabaptista.com' },
+  ]
   const [isOpen, setIsOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
   const linksRef = useRef<HTMLUListElement>(null)

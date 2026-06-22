@@ -1,19 +1,10 @@
-import { getTranslations } from 'next-intl/server'
 import { NavClient } from './nav-client'
+import type React from 'react'
 
-export async function NavLayout({ children }: { children: React.ReactNode }) {
-  const t = await getTranslations('nav')
-
-  const pages = [
-    { label: t('home'), href: '/' },
-    { label: t('projects'), href: '/categories' },
-    { label: t('about'), href: '/about' },
-    { label: t('contact'), href: 'mailto:contact@clarabaptista.com' },
-  ]
-
+export function NavLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <NavClient pages={pages} />
+      <NavClient />
       {children}
     </>
   )

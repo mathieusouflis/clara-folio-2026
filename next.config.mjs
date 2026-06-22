@@ -7,6 +7,15 @@ const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts')
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'clarabaptista.com',
+        pathname: '/api/media/file/**',
+      },
+    ],
+  },
   async redirects() {
     return [
       {
