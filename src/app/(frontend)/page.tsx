@@ -9,9 +9,27 @@ export const metadata: Metadata = {
   alternates: { canonical: '/' },
 }
 
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Clara Baptista',
+  jobTitle: 'Graphic Designer',
+  url: 'https://clarabaptista.com',
+  sameAs: [],
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Paris',
+    addressCountry: 'FR',
+  },
+}
+
 export default async function Page() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
+      />
       <HomePageWrapper />
     </>
   )

@@ -25,11 +25,7 @@ export async function generateMetadata({
   }
 }
 
-export default async function Page({
-  params,
-}: {
-  params: Promise<{ projectId: string }>
-}) {
+export default async function Page({ params }: { params: Promise<{ projectId: string }> }) {
   const { projectId } = await params
   const payloadConfig = await config
   const payload = await getPayload({ config: payloadConfig })
@@ -37,6 +33,30 @@ export default async function Page({
     collection: 'projects',
     where: { id: { equals: projectId } },
   })
-  if (!projects.docs[0]) return <NotFoundPage />
-  return <ProjectPage projects={projects} />
+  const project = projects.docs[0]
+  if (!project) return <NotFoundPage />
+
+  const creativeWorkSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'CreativeWork',
+    name: project.name,
+    description: project.meta?.description ?? project.description,
+    url: `https://clarabaptista.com/projects/${project.id}`,
+    creator: {
+      '@type': 'Person',
+      name: 'Clara Baptista',
+      url: 'https://clarabaptista.com',
+    },
+    ...(project.releaseDate && { dateCreated: project.releaseDate }),
+  }
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(creativeWorkSchema) }}
+      />
+      <ProjectPage projects={projects} />
+    </>
+  )
 }
