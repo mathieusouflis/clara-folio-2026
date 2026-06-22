@@ -1,4 +1,3 @@
-import './styles.css'
 import { HomePageWrapper } from '@/features/home'
 import type { Metadata } from 'next'
 

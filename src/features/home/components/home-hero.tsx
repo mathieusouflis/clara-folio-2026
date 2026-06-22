@@ -2,9 +2,11 @@
 
 import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
+import { useTranslations } from 'next-intl'
 import { TransitionLink } from '@/components/layout/transition/TransitionLink'
 
 export function HomeHero() {
+  const t = useTranslations('home')
   const titleRef = useRef<HTMLHeadingElement>(null)
   const nameRef = useRef<HTMLParagraphElement>(null)
   const btnRef = useRef<HTMLSpanElement>(null)
@@ -44,7 +46,7 @@ export function HomeHero() {
             data-cursor="open"
             className="text-white px-10 sm:px-16 py-3 sm:py-4 text-[13px] sm:text-[14px] border border-white hover:bg-white hover:text-black duration-300 font-semibold whitespace-nowrap"
           >
-            ENTER
+            {t('enter')}
           </TransitionLink>
         </span>
       </span>

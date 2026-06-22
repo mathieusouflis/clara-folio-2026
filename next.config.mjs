@@ -1,5 +1,8 @@
 import { withSentryConfig } from '@sentry/nextjs'
 import { withPayload } from '@payloadcms/next/withPayload'
+import createNextIntlPlugin from 'next-intl/plugin'
+
+const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts')
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -29,7 +32,7 @@ const nextConfig = {
   },
 }
 
-export default withSentryConfig(withPayload(nextConfig, { devBundleServerPackages: false }), {
+export default withSentryConfig(withNextIntl(withPayload(nextConfig, { devBundleServerPackages: false })), {
   org: 'clara-baptista',
   project: 'javascript-nextjs',
 

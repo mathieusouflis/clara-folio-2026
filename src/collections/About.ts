@@ -7,10 +7,12 @@ export const About: GlobalConfig = {
     read: () => true,
   },
   hooks: {
-    afterChange: [async ({ doc }) => {
-      revalidatePath("/about")
-      return doc
-    }]
+    afterChange: [
+      async ({ doc }) => {
+        revalidatePath('/about')
+        return doc
+      },
+    ],
   },
 
   fields: [
@@ -29,6 +31,7 @@ export const About: GlobalConfig = {
     {
       name: 'description',
       type: 'textarea',
+      localized: true,
     },
     {
       name: 'experiences',
@@ -134,7 +137,7 @@ export const About: GlobalConfig = {
         {
           name: 'level',
           type: 'select',
-          options: ['A1', 'A2', 'B1', 'B2', 'C1', 'C2', "Native"],
+          options: ['A1', 'A2', 'B1', 'B2', 'C1', 'C2', 'Native'],
           required: true,
         },
       ],

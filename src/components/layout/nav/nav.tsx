@@ -1,13 +1,16 @@
+import { getTranslations } from 'next-intl/server'
 import { NavClient } from './nav-client'
 
-const pages = [
-  { label: 'Home', href: '/' },
-  { label: 'Projects', href: '/categories' },
-  { label: 'About', href: '/about' },
-  { label: 'Contact', href: 'mailto:contact@clarabaptista.com' },
-]
+export async function NavLayout({ children }: { children: React.ReactNode }) {
+  const t = await getTranslations('nav')
 
-export function NavLayout({ children }: { children: React.ReactNode }) {
+  const pages = [
+    { label: t('home'), href: '/' },
+    { label: t('projects'), href: '/categories' },
+    { label: t('about'), href: '/about' },
+    { label: t('contact'), href: 'mailto:contact@clarabaptista.com' },
+  ]
+
   return (
     <>
       <NavClient pages={pages} />

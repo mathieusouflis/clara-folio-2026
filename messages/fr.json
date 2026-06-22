@@ -1,0 +1,15 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "projects": "Projets",
+    "about": "À propos",
+    "contact": "Contact"
+  },
+  "home": {
+    "enter": "ENTRER"
+  },
+  "notFound": {
+    "title": "Oups, je crois que vous êtes perdu !",
+    "goHome": "ACCUEIL"
+  }
+}

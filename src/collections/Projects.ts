@@ -1,5 +1,6 @@
 import { revalidatePath } from 'next/cache'
 import type { CollectionConfig } from 'payload'
+import { translateTexts } from '@/lib/deepl/translate'
 
 export const Projects: CollectionConfig = {
   slug: 'projects',
@@ -64,8 +65,52 @@ export const Projects: CollectionConfig = {
       },
     ],
     afterChange: [
-      async ({ doc }) => {
+      async ({ doc, req, operation }) => {
         revalidatePath('/categories')
+
+        // Auto-translate to French when saving English content
+        if (req.locale === 'en' && process.env.DEEPL_API_KEY) {
+          try {
+            const textsToTranslate: string[] = []
+            textsToTranslate.push(doc.name ?? '')
+            textsToTranslate.push(doc.description ?? '')
+
+            const contentTitles = (doc.content ?? []).map((s: any) => s.title ?? '')
+            const contentTexts = (doc.content ?? []).flatMap((s: any) =>
+              (s.contentDescription ?? []).map((d: any) => d.text ?? ''),
+            )
+            textsToTranslate.push(...contentTitles, ...contentTexts)
+
+            const translated = await translateTexts(textsToTranslate, 'FR')
+
+            let idx = 0
+            const frName = translated[idx++]
+            const frDescription = translated[idx++]
+            const frContent = (doc.content ?? []).map((section: any) => ({
+              ...section,
+              title: translated[idx++],
+              contentDescription: (section.contentDescription ?? []).map((d: any) => ({
+                ...d,
+                text: translated[idx++],
+              })),
+            }))
+
+            await req.payload.update({
+              collection: 'projects',
+              id: doc.id,
+              locale: 'fr',
+              data: {
+                name: frName,
+                description: frDescription,
+                content: frContent,
+              },
+              req,
+            })
+          } catch (err) {
+            console.error('DeepL auto-translation failed:', err)
+          }
+        }
+
         return doc
       },
     ],
@@ -76,6 +121,7 @@ export const Projects: CollectionConfig = {
       name: 'name',
       type: 'text',
       required: true,
+      localized: true,
       admin: {
         position: 'sidebar',
       },
@@ -83,6 +129,7 @@ export const Projects: CollectionConfig = {
     {
       name: 'description',
       type: 'textarea',
+      localized: true,
       admin: {
         position: 'sidebar',
       },
@@ -110,6 +157,7 @@ export const Projects: CollectionConfig = {
           name: 'title',
           type: 'text',
           required: true,
+          localized: true,
         },
         {
           name: 'contentDescription',
@@ -120,6 +168,7 @@ export const Projects: CollectionConfig = {
               name: 'text',
               type: 'text',
               required: true,
+              localized: true,
             },
           ],
         },
