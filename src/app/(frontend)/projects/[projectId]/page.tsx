@@ -1,12 +1,13 @@
 import { getPayload } from 'payload'
 import { ProjectPage } from '@/features/project'
+import { NotFoundPage } from '@/components/layout/not-found'
 import config from '@/payload.config'
 import type { Metadata } from 'next'
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ categoryId: string; projectId: string }>
+  params: Promise<{ projectId: string }>
 }): Promise<Metadata> {
   const { projectId } = await params
   const payloadConfig = await config
@@ -20,22 +21,22 @@ export async function generateMetadata({
   return {
     title: project.meta?.title ?? `Clara Baptista — ${project.name}`,
     description: project.meta?.description ?? project.description,
+    alternates: { canonical: `/projects/${project.id}` },
   }
 }
 
 export default async function Page({
   params,
 }: {
-  params: Promise<{ categoryId: string; projectId: string }>
+  params: Promise<{ projectId: string }>
 }) {
-  const { categoryId, projectId } = await params
-
+  const { projectId } = await params
   const payloadConfig = await config
   const payload = await getPayload({ config: payloadConfig })
   const projects = await payload.find({
     collection: 'projects',
     where: { id: { equals: projectId } },
   })
-
+  if (!projects.docs[0]) return <NotFoundPage />
   return <ProjectPage projects={projects} />
 }

@@ -3,13 +3,7 @@ import type { Project } from '@/payload-types'
 import { ProjectSection } from './section'
 import { ProjectHeroClient } from './components/project-hero-client'
 
-export async function ProjectPage({
-  projects,
-  categoryId,
-}: {
-  projects: PaginatedDocs<Project>
-  categoryId: number
-}) {
+export async function ProjectPage({ projects }: { projects: PaginatedDocs<Project> }) {
   if (!projects.docs || projects.docs.length === 0) {
     return null
   }

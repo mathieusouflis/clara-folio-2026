@@ -3,8 +3,16 @@ import { withPayload } from '@payloadcms/next/withPayload'
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Your Next.js config here
   output: 'standalone',
+  async redirects() {
+    return [
+      {
+        source: '/categories/:categoryId/:projectId',
+        destination: '/projects/:projectId',
+        permanent: true,
+      },
+    ]
+  },
   experimental: {
     serverActions: {
       bodySizeLimit: '50mb',
