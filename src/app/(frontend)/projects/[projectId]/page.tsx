@@ -22,6 +22,19 @@ export async function generateMetadata({
     title: project.meta?.title ?? `Clara Baptista — ${project.name}`,
     description: project.meta?.description ?? project.description,
     alternates: { canonical: `/projects/${project.id}` },
+    openGraph: {
+      images: [
+        {
+          url: `/api/og?projectId=${project.id}`,
+          width: 1200,
+          height: 630,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      images: [`/api/og?projectId=${project.id}`],
+    },
   }
 }
 
