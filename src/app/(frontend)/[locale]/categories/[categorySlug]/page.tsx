@@ -5,10 +5,10 @@ import { NotFoundPage } from '@/components/layout/not-found'
 import { ProjectListPage } from '@/features/project-list'
 import config from '@/payload.config'
 import type { Metadata } from 'next'
+import type { Project } from '@/payload-types'
+import { BASE_URL, breadcrumbList, graph, localeAlternates, type Locale } from '@/lib/seo'
 
-const BASE_URL = 'https://clarabaptista.com'
-
-async function findCategory(slugOrId: string) {
+async function findCategory(slugOrId: string, locale?: Locale) {
   const payloadConfig = await config
   const payload = await getPayload({ config: payloadConfig })
 
@@ -17,6 +17,7 @@ async function findCategory(slugOrId: string) {
       const category = await payload.findByID({
         collection: 'categories',
         id: parseInt(slugOrId),
+        ...(locale ? { locale } : {}),
       })
       if (category?.slug) permanentRedirect(`/categories/${category.slug}`)
       return category ?? null
@@ -29,6 +30,7 @@ async function findCategory(slugOrId: string) {
     collection: 'categories',
     where: { slug: { equals: slugOrId } },
     limit: 1,
+    ...(locale ? { locale } : {}),
   })
   if (res.docs[0]) return res.docs[0]
 
@@ -49,14 +51,15 @@ export async function generateMetadata({
   params: Promise<{ categorySlug: string }>
 }): Promise<Metadata> {
   const { categorySlug } = await params
-  const category = await findCategory(categorySlug)
+  const locale = (await getLocale()) as Locale
+  const category = await findCategory(categorySlug, locale)
   if (!category) return { title: 'Graphic Designer' }
 
   const canonicalSlug = category.slug ?? String(category.id)
   const ogUrl = `${BASE_URL}/api/og?type=Category&title=${encodeURIComponent(category.categoryName)}`
   return {
     title: category.categoryName,
-    alternates: { canonical: `/categories/${canonicalSlug}` },
+    alternates: localeAlternates(locale, `/categories/${canonicalSlug}`),
     openGraph: { images: [{ url: ogUrl, width: 1200, height: 630 }] },
     twitter: { card: 'summary_large_image', images: [ogUrl] },
   }
@@ -96,7 +99,42 @@ export default async function Page({ params }: { params: Promise<{ categorySlug:
     }
 
     if (!category) return <NotFoundPage />
-    return <ProjectListPage category={category} />
+
+    const canonicalSlug = category.slug ?? String(category.id)
+    const categoryPath = `/categories/${canonicalSlug}`
+    const projectItems = ((category.relatedProjects ?? []) as (number | Project)[])
+      .filter((p): p is Project => typeof p === 'object' && Boolean(p.slug))
+      .map((p, i) => ({
+        '@type': 'ListItem' as const,
+        position: i + 1,
+        url: `${BASE_URL}/projects/${p.slug}`,
+        name: p.name,
+      }))
+
+    const jsonLd = graph(
+      {
+        '@type': 'CollectionPage',
+        name: category.categoryName,
+        url: `${BASE_URL}${locale === 'fr' ? '/fr' : ''}${categoryPath}`,
+        mainEntity: {
+          '@type': 'ItemList',
+          numberOfItems: projectItems.length,
+          itemListElement: projectItems,
+        },
+      },
+      breadcrumbList([
+        { name: 'Home', path: '/' },
+        { name: 'Projects', path: '/categories' },
+        { name: category.categoryName, path: categoryPath },
+      ]),
+    )
+
+    return (
+      <>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
+        <ProjectListPage category={category} />
+      </>
+    )
   } catch {
     return <NotFoundPage />
   }

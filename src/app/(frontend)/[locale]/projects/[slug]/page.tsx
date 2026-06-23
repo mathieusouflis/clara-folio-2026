@@ -4,10 +4,20 @@ import { permanentRedirect } from 'next/navigation'
 import { ProjectPage } from '@/features/project'
 import { NotFoundPage } from '@/components/layout/not-found'
 import config from '@/payload.config'
-import type { Media } from '@/payload-types'
+import type { Category, Media } from '@/payload-types'
 import type { Metadata } from 'next'
+import {
+  BASE_URL,
+  PERSON_ID,
+  absoluteMediaUrl,
+  breadcrumbList,
+  graph,
+  localeAlternates,
+  personNode,
+  type Locale,
+} from '@/lib/seo'
 
-const BASE_URL = 'https://clarabaptista.com'
+const localeTag: Record<Locale, string> = { en: 'en-US', fr: 'fr-FR' }
 
 async function findProject(slug: string) {
   const payloadConfig = await config
@@ -52,16 +62,12 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>
 }): Promise<Metadata> {
   const { slug } = await params
+  const locale = (await getLocale()) as Locale
   const project = await findProject(slug)
   if (!project) return { title: 'Graphic Designer' }
 
   const title = project.meta?.title ?? project.name ?? ''
-  const img = project.image as Media | null
-  const rawImageUrl = img?.url
-    ? img.url.startsWith('http')
-      ? img.url
-      : `${BASE_URL}${img.url}`
-    : null
+  const rawImageUrl = absoluteMediaUrl((project.image as Media | null)?.url)
 
   const ogParams = new URLSearchParams({ type: 'Project', title })
   if (rawImageUrl) ogParams.set('imageUrl', rawImageUrl)
@@ -71,43 +77,79 @@ export async function generateMetadata({
   return {
     title,
     description: project.meta?.description ?? project.description,
-    alternates: { canonical: `/projects/${canonicalSlug}` },
-    openGraph: { images: [{ url: ogUrl, width: 1200, height: 630 }] },
+    alternates: localeAlternates(locale, `/projects/${canonicalSlug}`),
+    openGraph: { type: 'article', images: [{ url: ogUrl, width: 1200, height: 630 }] },
     twitter: { card: 'summary_large_image', images: [ogUrl] },
   }
 }
 
 export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
+  const locale = (await getLocale()) as Locale
   const project = await findProject(slug)
   if (!project) return <NotFoundPage />
 
   const img = project.image as Media | null
-  const rawImageUrl = img?.url
-    ? img.url.startsWith('http')
-      ? img.url
-      : `${BASE_URL}${img.url}`
+  const rawImageUrl = absoluteMediaUrl(img?.url)
+  const canonicalSlug = project.slug ?? String(project.id)
+  const pageUrl = `${BASE_URL}${locale === 'fr' ? '/fr' : ''}/projects/${canonicalSlug}`
+
+  // Crawlable case-study text → articleBody (image-only projects yield '').
+  const articleBody = (project.content ?? [])
+    .map((section) =>
+      [section.title, ...(section.contentDescription ?? []).map((d) => d.text)]
+        .filter(Boolean)
+        .join(' '),
+    )
+    .filter(Boolean)
+    .join('\n\n')
+
+  const keywords = ((project.relatedCategories ?? []) as (number | Category)[])
+    .filter((c): c is Category => typeof c === 'object')
+    .map((c) => c.categoryName)
+
+  const imageNode = rawImageUrl
+    ? {
+        '@type': 'ImageObject',
+        contentUrl: rawImageUrl,
+        url: rawImageUrl,
+        creditText: 'Clara Baptista',
+        creator: { '@id': PERSON_ID },
+        ...(img?.caption || img?.alt ? { caption: img.caption ?? img.alt } : {}),
+      }
     : null
 
-  const canonicalSlug = project.slug ?? String(project.id)
-  const creativeWorkSchema = {
-    '@context': 'https://schema.org',
+  const creativeWork = {
     '@type': 'CreativeWork',
+    '@id': `${pageUrl}#work`,
     name: project.name,
+    headline: project.name,
     description: project.meta?.description ?? project.description,
-    url: `${BASE_URL}/projects/${canonicalSlug}`,
-    creator: {
-      '@type': 'Person',
-      name: 'Clara Baptista',
-      url: BASE_URL,
-    },
-    ...(project.releaseDate && { dateCreated: project.releaseDate }),
-    ...(rawImageUrl && { image: rawImageUrl }),
+    url: pageUrl,
+    inLanguage: localeTag[locale],
+    mainEntityOfPage: pageUrl,
+    creator: { '@id': PERSON_ID },
+    dateModified: project.updatedAt,
+    ...(project.releaseDate
+      ? { dateCreated: project.releaseDate, datePublished: project.releaseDate }
+      : {}),
+    ...(keywords.length ? { keywords } : {}),
+    ...(articleBody ? { articleBody } : {}),
+    ...(imageNode ? { image: imageNode } : {}),
   }
+
+  const jsonLd = graph(
+    creativeWork,
+    breadcrumbList([
+      { name: 'Home', path: '/' },
+      { name: 'Projects', path: '/categories' },
+      { name: project.name, path: `/projects/${canonicalSlug}` },
+    ]),
+    personNode(),
+  )
 
   const payloadConfig = await config
   const payload = await getPayload({ config: payloadConfig })
-  const locale = (await getLocale()) as 'en' | 'fr'
   const projects = await payload.find({
     collection: 'projects',
     where: { id: { equals: project.id } },
@@ -116,10 +158,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(creativeWorkSchema) }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
       <ProjectPage projects={projects} />
     </>
   )

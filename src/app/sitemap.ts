@@ -4,6 +4,14 @@ import config from '@/payload.config'
 
 const BASE_URL = 'https://clarabaptista.com'
 
+// Reciprocal + self-referencing hreflang. Listing only `fr` (without an `en`
+// self-reference and `x-default`) breaks the cluster and Google ignores it.
+function languages(enPath: string) {
+  const en = `${BASE_URL}${enPath}`
+  const fr = `${BASE_URL}/fr${enPath}`
+  return { en, fr, 'x-default': en }
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const payloadConfig = await config
   const payload = await getPayload({ config: payloadConfig })
@@ -19,21 +27,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 1,
-      alternates: { languages: { fr: `${BASE_URL}/fr` } },
+      alternates: { languages: languages('') },
     },
     {
       url: `${BASE_URL}/about`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.8,
-      alternates: { languages: { fr: `${BASE_URL}/fr/about` } },
+      alternates: { languages: languages('/about') },
     },
     {
       url: `${BASE_URL}/categories`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.8,
-      alternates: { languages: { fr: `${BASE_URL}/fr/categories` } },
+      alternates: { languages: languages('/categories') },
     },
   ]
 
@@ -44,7 +52,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(category.updatedAt),
       changeFrequency: 'weekly' as const,
       priority: 0.7,
-      alternates: { languages: { fr: `${BASE_URL}/fr/categories/${category.slug}` } },
+      alternates: { languages: languages(`/categories/${category.slug}`) },
     }))
 
   const projectRoutes: MetadataRoute.Sitemap = projectsRes.docs
@@ -54,7 +62,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(project.updatedAt),
       changeFrequency: 'monthly' as const,
       priority: 0.9,
-      alternates: { languages: { fr: `${BASE_URL}/fr/projects/${project.slug}` } },
+      alternates: { languages: languages(`/projects/${project.slug}`) },
     }))
 
   return [...staticRoutes, ...categoryRoutes, ...projectRoutes]
