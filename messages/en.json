@@ -3,7 +3,9 @@
     "home": "Home",
     "projects": "Projects",
     "about": "About",
-    "contact": "Contact"
+    "contact": "Contact",
+    "closeMenu": "Close menu",
+    "openMenu": "Open menu"
   },
   "home": {
     "enter": "ENTER"
@@ -11,5 +13,26 @@
   "notFound": {
     "title": "Oops, I think you are lost!",
     "goHome": "GO HOME"
+  },
+  "about": {
+    "who": "Who?",
+    "experiences": "Experiences",
+    "education": "Education",
+    "hardSkills": "Hard skills",
+    "softSkills": "Soft skills",
+    "languages": "Languages",
+    "now": "now"
+  },
+  "projectList": {
+    "wip": "WIP, stay tuned!",
+    "goBack": "GO BACK"
+  },
+  "mobile": {
+    "message": "For the best experience, please visit this website on a computer."
+  },
+  "footer": {
+    "sitemap": "Sitemap",
+    "socials": "Socials",
+    "opensInNewTab": "opens in new tab"
   }
 }

@@ -3,8 +3,10 @@ import { getPayload } from 'payload'
 import { Grid, GridItem } from '@/components/layout/grid'
 import { AnimatedSection } from '@/components/ui/animated-section'
 import config from '@/payload.config'
+import { getTranslations } from 'next-intl/server'
 
 export async function AboutPage() {
+  const t = await getTranslations('about')
   const payloadConfig = await config
   const payload = await getPayload({ config: payloadConfig })
   const aboutGlobal = await payload.findGlobal({ slug: 'about' })
@@ -47,7 +49,7 @@ export async function AboutPage() {
             {aboutGlobal.description && (
               <div className="flex flex-col gap-1 mt-8 md:mt-16">
                 <h2 className="text-white text-[14px] md:text-[16px] font-bold uppercase tracking-wider">
-                  Who ?
+                  {t('who')}
                 </h2>
                 <p className="text-white text-[15px] md:text-[16px] font-normal leading-relaxed">
                   {aboutGlobal.description}
@@ -69,7 +71,7 @@ export async function AboutPage() {
             <GridItem start={2} end={12} span={'full'} className="flex flex-col gap-3">
               <AnimatedSection selector=":scope > *" stagger={0.06} y={15} duration={0.7}>
                 <h2 className="text-white text-[13px] md:text-[16px] font-bold uppercase tracking-wider mb-2">
-                  Experiences
+                  {t('experiences')}
                 </h2>
                 <div className="flex flex-col divide-y divide-white/10">
                   {experiences.map((exp, idx) => (
@@ -78,7 +80,7 @@ export async function AboutPage() {
                       className="flex flex-wrap gap-x-6 gap-y-0.5 py-2 text-white text-[14px] md:text-[16px]"
                     >
                       <span className="shrink-0 opacity-60 tabular-nums w-28">
-                        {exp.startYear} / {exp.endYear || 'now'}
+                        {exp.startYear} / {exp.endYear || t('now')}
                       </span>
                       <span className="shrink-0 font-medium min-w-[120px]">
                         {exp.enterpriseName}
@@ -101,7 +103,7 @@ export async function AboutPage() {
             >
               <AnimatedSection selector=":scope > *" stagger={0.06} y={15} duration={0.7}>
                 <h2 className="text-white text-[13px] md:text-[16px] font-bold uppercase tracking-wider mb-2">
-                  Education
+                  {t('education')}
                 </h2>
                 <div className="flex flex-col divide-y divide-white/10">
                   {education
@@ -116,7 +118,7 @@ export async function AboutPage() {
                         className="flex flex-wrap gap-x-6 gap-y-0.5 py-2 text-white text-[14px] md:text-[16px]"
                       >
                         <span className="shrink-0 opacity-60 tabular-nums w-28">
-                          {edu.startYear} / {edu.endYear || 'now'}
+                          {edu.startYear} / {edu.endYear || t('now')}
                         </span>
                         <span className="flex-1 min-w-[120px]">{edu.schoolType}</span>
                         <span className="shrink-0 opacity-60 text-right">{edu.schoolName}</span>
@@ -131,7 +133,7 @@ export async function AboutPage() {
             <GridItem start={2} end={12} span={'full'} className="flex flex-col gap-3">
               <AnimatedSection selector=":scope > *" stagger={0.06} y={15} duration={0.7}>
                 <h2 className="text-white text-[13px] md:text-[16px] font-bold uppercase tracking-wider mb-2">
-                  Hard skills
+                  {t('hardSkills')}
                 </h2>
                 <div className="flex flex-col divide-y divide-white/10">
                   {hardSkillsCategories.map((cat, idx) => (
@@ -159,7 +161,7 @@ export async function AboutPage() {
             >
               <AnimatedSection selector=":scope > *" stagger={0.06} y={15} duration={0.7}>
                 <h2 className="text-white text-[13px] md:text-[16px] font-bold uppercase tracking-wider mb-2">
-                  Soft skills
+                  {t('softSkills')}
                 </h2>
                 <div className="flex flex-col divide-y divide-white/10">
                   {softSkills.map((skill, idx) => (
@@ -180,7 +182,7 @@ export async function AboutPage() {
             <GridItem start={2} end={12} span={'full'} className="flex flex-col gap-3">
               <AnimatedSection selector=":scope > *" stagger={0.06} y={15} duration={0.7}>
                 <h2 className="text-white text-[13px] md:text-[16px] font-bold uppercase tracking-wider mb-2">
-                  Languages
+                  {t('languages')}
                 </h2>
                 <div className="flex flex-col divide-y divide-white/10">
                   {languages.map((lang, idx) => (

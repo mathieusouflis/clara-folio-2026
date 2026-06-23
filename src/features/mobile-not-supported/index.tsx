@@ -2,8 +2,10 @@
 
 import { cn } from '@/lib/utils/cn'
 import { useEffect, useState } from 'react'
+import { useTranslations } from 'next-intl'
 
 export function MobileNotSupported() {
+  const t = useTranslations('mobile')
   const [screenSize, setScreenSize] = useState(window.innerWidth)
 
   useEffect(() => {
@@ -19,9 +21,7 @@ export function MobileNotSupported() {
         screenSize <= 425 ? 'z-9999999999 flex' : 'hidden',
       )}
     >
-      <p className="text-center">
-        For the best experience, please visit this website on a computer.
-      </p>
+      <p className="text-center">{t('message')}</p>
     </div>
   )
 }

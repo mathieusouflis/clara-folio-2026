@@ -81,7 +81,7 @@ export function NavClient() {
         <button
           className="flex md:hidden flex-col items-center justify-center gap-[5px] w-12 h-12 -mr-2"
           onClick={() => setIsOpen((v) => !v)}
-          aria-label={isOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
+          aria-label={isOpen ? t('closeMenu') : t('openMenu')}
         >
           <span
             className={cn(

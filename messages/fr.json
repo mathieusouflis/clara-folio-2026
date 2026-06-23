@@ -3,7 +3,9 @@
     "home": "Accueil",
     "projects": "Projets",
     "about": "À propos",
-    "contact": "Contact"
+    "contact": "Contact",
+    "closeMenu": "Fermer le menu",
+    "openMenu": "Ouvrir le menu"
   },
   "home": {
     "enter": "ENTRER"
@@ -11,5 +13,26 @@
   "notFound": {
     "title": "Oups, je crois que vous êtes perdu !",
     "goHome": "ACCUEIL"
+  },
+  "about": {
+    "who": "Qui ?",
+    "experiences": "Expériences",
+    "education": "Formation",
+    "hardSkills": "Compétences techniques",
+    "softSkills": "Savoir-être",
+    "languages": "Langues",
+    "now": "aujourd'hui"
+  },
+  "projectList": {
+    "wip": "En cours, restez connectés !",
+    "goBack": "RETOUR"
+  },
+  "mobile": {
+    "message": "Pour une meilleure expérience, veuillez visiter ce site sur un ordinateur."
+  },
+  "footer": {
+    "sitemap": "Plan du site",
+    "socials": "Réseaux",
+    "opensInNewTab": "ouvre dans un nouvel onglet"
   }
 }

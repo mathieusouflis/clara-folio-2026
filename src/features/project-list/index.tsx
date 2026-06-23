@@ -2,8 +2,10 @@ import { Grid, GridItem } from '@/components/layout/grid'
 import { TransitionLink } from '@/components/layout/transition/TransitionLink'
 import { BlurImage } from '@/components/ui/blur-image'
 import type { Category } from '@/payload-types'
+import { getTranslations } from 'next-intl/server'
 
 export async function ProjectListPage({ category }: { category: Category }) {
+  const t = await getTranslations('projectList')
   const projects =
     category?.relatedProjects
       ?.map(
@@ -29,14 +31,14 @@ export async function ProjectListPage({ category }: { category: Category }) {
           className="py-10 h-screen flex flex-col gap-10 items-center justify-center"
         >
           <h1 className="opacity-60 text-white text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-bold text-center px-4">
-            WIP, stay tuned !
+            {t('wip')}
           </h1>
           <TransitionLink
             href="/categories"
             data-cursor="open"
             className="text-white px-12 py-4 min-h-[48px] flex items-center text-[14px] border border-white hover:bg-white hover:text-black duration-300 font-semibold"
           >
-            GO BACK
+            {t('goBack')}
           </TransitionLink>
         </GridItem>
       </Grid>

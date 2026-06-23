@@ -14,6 +14,11 @@ const nextConfig = {
         hostname: 'clarabaptista.com',
         pathname: '/api/media/file/**',
       },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        pathname: '/api/media/file/**',
+      },
     ],
   },
   async redirects() {
