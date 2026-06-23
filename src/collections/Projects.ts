@@ -100,7 +100,13 @@ export const Projects: CollectionConfig = {
         }
       },
       async ({ doc, req, operation }) => {
-        revalidatePath('/categories')
+        // revalidatePath throws outside a Next.js request context (e.g. scripts,
+        // programmatic local-API calls). Guard it so it can't abort the transaction.
+        try {
+          revalidatePath('/categories')
+        } catch {
+          // not in a request context; nothing to revalidate
+        }
 
         // Auto-translate to French when saving English content
         if (req.locale === 'en' && process.env.DEEPL_API_KEY) {
