@@ -3,13 +3,14 @@ import { getPayload } from 'payload'
 import { Grid, GridItem } from '@/components/layout/grid'
 import { AnimatedSection } from '@/components/ui/animated-section'
 import config from '@/payload.config'
-import { getTranslations } from 'next-intl/server'
+import { getLocale, getTranslations } from 'next-intl/server'
 
 export async function AboutPage() {
   const t = await getTranslations('about')
   const payloadConfig = await config
   const payload = await getPayload({ config: payloadConfig })
-  const aboutGlobal = await payload.findGlobal({ slug: 'about' })
+  const locale = (await getLocale()) as 'en' | 'fr'
+  const aboutGlobal = await payload.findGlobal({ slug: 'about', locale })
 
   const experiences = aboutGlobal.experiences
   const education = aboutGlobal.education

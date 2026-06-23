@@ -1,4 +1,5 @@
 import { getPayload } from 'payload'
+import { getLocale } from 'next-intl/server'
 import { permanentRedirect } from 'next/navigation'
 import { ProjectPage } from '@/features/project'
 import { NotFoundPage } from '@/components/layout/not-found'
@@ -11,6 +12,7 @@ const BASE_URL = 'https://clarabaptista.com'
 async function findProject(slug: string) {
   const payloadConfig = await config
   const payload = await getPayload({ config: payloadConfig })
+  const locale = (await getLocale()) as 'en' | 'fr'
 
   // Numeric ID → find by ID and redirect to slug URL
   if (/^\d+$/.test(slug)) {
@@ -18,6 +20,7 @@ async function findProject(slug: string) {
       collection: 'projects',
       where: { id: { equals: slug } },
       depth: 1,
+      locale,
     })
     const project = byId.docs[0]
     if (project?.slug) permanentRedirect(`/projects/${project.slug}`)
@@ -28,6 +31,7 @@ async function findProject(slug: string) {
     collection: 'projects',
     where: { slug: { equals: slug } },
     depth: 1,
+    locale,
   })
   if (res.docs[0]) return res.docs[0]
 
@@ -103,9 +107,11 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
 
   const payloadConfig = await config
   const payload = await getPayload({ config: payloadConfig })
+  const locale = (await getLocale()) as 'en' | 'fr'
   const projects = await payload.find({
     collection: 'projects',
     where: { id: { equals: project.id } },
+    locale,
   })
 
   return (

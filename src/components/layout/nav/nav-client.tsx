@@ -7,6 +7,7 @@ import { gsap } from 'gsap'
 import { cn } from '@/lib/utils/cn'
 import { NavPathLink } from './nav-path-link'
 import { TransitionLink } from '@/components/layout/transition/TransitionLink'
+import { LocaleSwitcher } from './locale-switcher'
 import { Logo } from '@/components/ui/logo'
 
 export function NavClient() {
@@ -59,23 +60,27 @@ export function NavClient() {
   return (
     <>
       <nav className="fixed flex items-center justify-between top-0 left-0 w-full px-(--grid-margin) py-3 z-[10000]">
-        {/* Logo */}
+        {/* Logo — mix-blend-difference le fait s'inverser selon le fond */}
         <TransitionLink
           href="/"
-          className="text-white opacity-80 hover:opacity-100 transition-opacity"
+          className="text-white opacity-80 hover:opacity-100 transition-opacity mix-blend-difference"
           aria-label="Clara Baptista — Home"
         >
           <Logo className="h-9 w-auto" />
         </TransitionLink>
 
-        {/* Liens desktop */}
-        <ul className="hidden md:flex flex-row gap-4 ml-auto">
-          {pages.map((page) => (
-            <NavPathLink key={page.href} href={page.href}>
-              {page.label}
-            </NavPathLink>
-          ))}
-        </ul>
+        {/* Liens desktop + switcher de langue */}
+        <div className="ml-auto flex items-center gap-4">
+          <ul className="hidden md:flex flex-row gap-4">
+            {pages.map((page) => (
+              <NavPathLink key={page.href} href={page.href}>
+                {page.label}
+              </NavPathLink>
+            ))}
+          </ul>
+
+          <LocaleSwitcher />
+        </div>
 
         {/* Bouton hamburger / fermer (mobile uniquement) */}
         <button

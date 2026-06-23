@@ -180,6 +180,7 @@ export const Categories: CollectionConfig = {
       name: 'categoryName',
       type: 'text',
       required: true,
+      localized: true,
     },
     {
       name: 'relatedProjects',

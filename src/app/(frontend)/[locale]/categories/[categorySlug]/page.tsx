@@ -1,4 +1,5 @@
 import { getPayload } from 'payload'
+import { getLocale } from 'next-intl/server'
 import { permanentRedirect } from 'next/navigation'
 import { NotFoundPage } from '@/components/layout/not-found'
 import { ProjectListPage } from '@/features/project-list'
@@ -66,6 +67,7 @@ export default async function Page({ params }: { params: Promise<{ categorySlug:
 
   const payloadConfig = await config
   const payload = await getPayload({ config: payloadConfig })
+  const locale = (await getLocale()) as 'en' | 'fr'
 
   try {
     let category
@@ -74,6 +76,7 @@ export default async function Page({ params }: { params: Promise<{ categorySlug:
       category = await payload.findByID({
         collection: 'categories',
         id: parseInt(categorySlug),
+        locale,
         populate: {
           projects: { image: true, name: true, releaseDate: true, slug: true },
         },
@@ -84,6 +87,7 @@ export default async function Page({ params }: { params: Promise<{ categorySlug:
         collection: 'categories',
         where: { slug: { equals: categorySlug } },
         limit: 1,
+        locale,
         populate: {
           projects: { image: true, name: true, releaseDate: true, slug: true },
         },

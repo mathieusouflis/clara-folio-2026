@@ -1,6 +1,6 @@
 'use client'
 
-import { usePathname } from 'next/navigation'
+import { usePathname } from '@/i18n/navigation'
 import { cn } from '@/lib/utils/cn'
 import { TransitionLink } from '@/components/layout/transition/TransitionLink'
 

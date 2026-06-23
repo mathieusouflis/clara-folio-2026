@@ -1,11 +1,13 @@
 'use client'
 
 import { createContext, useCallback, useContext, useRef, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter } from '@/i18n/navigation'
 import { gsap } from 'gsap'
 
+type NavigateOptions = { locale?: 'en' | 'fr' }
+
 interface TransitionContextValue {
-  navigateTo: (href: string) => void
+  navigateTo: (href: string, options?: NavigateOptions) => void
   overlayRef: React.RefObject<HTMLDivElement | null>
   isNavigating: boolean
   setIsNavigating: (v: boolean) => void
@@ -19,9 +21,9 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
   const [isNavigating, setIsNavigating] = useState(false)
 
   const navigateTo = useCallback(
-    (href: string) => {
+    (href: string, options?: NavigateOptions) => {
       if (!overlayRef.current) {
-        router.push(href)
+        router.push(href, options)
         return
       }
       gsap.to(overlayRef.current, {
@@ -32,7 +34,7 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
         onComplete: () => {
           // Le rideau est en place — on signale qu'on attend le fetch
           setIsNavigating(true)
-          router.push(href)
+          router.push(href, options)
         },
       })
     },

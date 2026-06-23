@@ -1,5 +1,6 @@
 import { AboutPage } from '@/features/about'
 import { getPayload } from 'payload'
+import { getLocale } from 'next-intl/server'
 import config from '@/payload.config'
 import type { Media } from '@/payload-types'
 import type { Metadata } from 'next'
@@ -9,7 +10,8 @@ const BASE_URL = 'https://clarabaptista.com'
 export async function generateMetadata(): Promise<Metadata> {
   const payloadConfig = await config
   const payload = await getPayload({ config: payloadConfig })
-  const aboutGlobal = await payload.findGlobal({ slug: 'about' })
+  const locale = (await getLocale()) as 'en' | 'fr'
+  const aboutGlobal = await payload.findGlobal({ slug: 'about', locale })
 
   const img = aboutGlobal.image as Media | null
   const rawImageUrl = img?.url
@@ -39,7 +41,8 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function Page() {
   const payloadConfig = await config
   const payload = await getPayload({ config: payloadConfig })
-  const aboutGlobal = await payload.findGlobal({ slug: 'about', depth: 1 })
+  const locale = (await getLocale()) as 'en' | 'fr'
+  const aboutGlobal = await payload.findGlobal({ slug: 'about', depth: 1, locale })
 
   const img = aboutGlobal.image as Media | null
   const rawImageUrl = img?.url
