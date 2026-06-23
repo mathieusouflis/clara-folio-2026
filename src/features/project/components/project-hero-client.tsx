@@ -87,6 +87,7 @@ export function ProjectHeroClient({ project }: { project: Project }) {
                 width={project.image.width || 1920}
                 height={project.image.height || 1080}
                 className="w-4/5 object-cover"
+                priority
               />
             )}
           </div>
@@ -118,6 +119,7 @@ export function ProjectHeroClient({ project }: { project: Project }) {
               width={project.image.width || 1920}
               height={project.image.height || 1080}
               className="w-full object-cover"
+              priority
             />
           </div>
         )}

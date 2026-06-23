@@ -11,6 +11,7 @@ import * as migration_20260622_210000 from './20260622_210000'
 import * as migration_20260622_220000 from './20260622_220000'
 import * as migration_20260623_localize_category_name from './20260623_localize_category_name'
 import * as migration_20260623_add_media_caption from './20260623_add_media_caption'
+import * as migration_20260623_add_services_global from './20260623_add_services_global'
 
 export const migrations = [
   {
@@ -77,5 +78,10 @@ export const migrations = [
     up: migration_20260623_add_media_caption.up,
     down: migration_20260623_add_media_caption.down,
     name: '20260623_add_media_caption',
+  },
+  {
+    up: migration_20260623_add_services_global.up,
+    down: migration_20260623_add_services_global.down,
+    name: '20260623_add_services_global',
   },
 ]

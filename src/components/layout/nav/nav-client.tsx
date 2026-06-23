@@ -15,6 +15,7 @@ export function NavClient() {
   const pages = [
     { label: t('home'), href: '/' },
     { label: t('projects'), href: '/categories' },
+    { label: t('services'), href: '/services' },
     { label: t('about'), href: '/about' },
     { label: t('contact'), href: 'mailto:contact@clarabaptista.com' },
   ]

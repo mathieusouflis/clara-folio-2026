@@ -6,6 +6,7 @@ import {
   graph,
   localeAlternates,
   personNode,
+  professionalServiceNode,
   siteNavigationNode,
   websiteNode,
   type Locale,
@@ -30,7 +31,12 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function Page() {
   const locale = (await getLocale()) as Locale
-  const jsonLd = graph(websiteNode(locale), personNode(), siteNavigationNode())
+  const jsonLd = graph(
+    websiteNode(locale),
+    personNode(),
+    professionalServiceNode(),
+    siteNavigationNode(),
+  )
 
   return (
     <>

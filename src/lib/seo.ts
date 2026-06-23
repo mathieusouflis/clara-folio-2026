@@ -6,6 +6,14 @@ export const BASE_URL = 'https://clarabaptista.com'
 // instead of repeating their definitions (builds a single knowledge graph).
 export const PERSON_ID = `${BASE_URL}/#person`
 export const WEBSITE_ID = `${BASE_URL}/#website`
+export const SERVICE_ID = `${BASE_URL}/#service`
+
+// Centralised external-profile links. Add Behance/Dribbble URLs here once live —
+// they flow into both the Person and ProfessionalService `sameAs` automatically.
+export const SAME_AS = [
+  'https://www.linkedin.com/in/clarabaptista',
+  'https://www.instagram.com/hhwgii',
+]
 
 export type Locale = 'en' | 'fr'
 
@@ -46,10 +54,15 @@ export function personNode(image?: string | null) {
     '@type': 'Person',
     '@id': PERSON_ID,
     name: 'Clara Baptista',
+    // Name components + reversed-order variant so Google matches the entity
+    // whether searched as "Clara Baptista" or "Baptista Clara".
+    givenName: 'Clara',
+    familyName: 'Baptista',
+    alternateName: 'Baptista Clara',
     jobTitle: 'Graphic Designer',
     url: BASE_URL,
     email: CONTACT_EMAIL,
-    sameAs: ['https://www.linkedin.com/in/clarabaptista', 'https://www.instagram.com/hhwgii'],
+    sameAs: SAME_AS,
     knowsAbout: ['Branding', 'Visual identity', 'Print design', 'Graphic design'],
     address: {
       '@type': 'PostalAddress',
@@ -57,6 +70,31 @@ export function personNode(image?: string | null) {
       addressCountry: 'FR',
     },
     ...(image ? { image } : {}),
+  }
+}
+
+/**
+ * Local-business entity for "graphiste freelance Paris" intent + local pack
+ * synergy with the Google Business Profile. Service-area business: areaServed
+ * instead of a street address, no phone (privacy). NAP name must match GBP.
+ */
+export function professionalServiceNode() {
+  return {
+    '@type': 'ProfessionalService',
+    '@id': SERVICE_ID,
+    name: 'Clara Baptista — Graphic Designer',
+    url: BASE_URL,
+    email: CONTACT_EMAIL,
+    image: `${BASE_URL}/api/og?title=Graphic+Designer`,
+    priceRange: '€€',
+    sameAs: SAME_AS,
+    provider: { '@id': PERSON_ID },
+    areaServed: [
+      { '@type': 'City', name: 'Paris' },
+      { '@type': 'AdministrativeArea', name: 'Île-de-France' },
+    ],
+    knowsLanguage: ['fr', 'en'],
+    serviceType: ['Branding', 'Visual identity', 'Print design', 'Logo design'],
   }
 }
 

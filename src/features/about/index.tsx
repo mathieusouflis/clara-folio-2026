@@ -34,6 +34,7 @@ export async function AboutPage() {
               alt={typeof aboutGlobal.image === 'number' ? '' : aboutGlobal.image.alt}
               width={1920}
               height={1080}
+              priority
             />
           </AnimatedSection>
         </GridItem>

@@ -1,7 +1,7 @@
 import localFont from 'next/font/local'
 
 /**
- * Satoshi - Main sans-serif font used throughout the application
+ * Satoshi - Main sans-serif font used as the default body font throughout the app.
  * Variable font for optimal performance and flexibility
  */
 export const satoshi = localFont({

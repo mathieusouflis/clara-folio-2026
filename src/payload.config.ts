@@ -11,6 +11,7 @@ import { Projects } from './collections/Projects'
 import { Categories } from './collections/Categories'
 import { About } from './collections/About'
 import { Footer } from './collections/Footer'
+import { Services } from './collections/Services'
 import { Redirects } from './collections/Redirects'
 import { seoPlugin } from '@payloadcms/plugin-seo'
 
@@ -33,7 +34,7 @@ export default buildConfig({
     defaultLocale: 'en',
     fallback: true,
   },
-  globals: [About, Footer],
+  globals: [About, Footer, Services],
   collections: [Users, Media, Projects, Categories, Redirects],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',

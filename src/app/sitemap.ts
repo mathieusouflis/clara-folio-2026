@@ -43,6 +43,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
       alternates: { languages: languages('/categories') },
     },
+    {
+      url: `${BASE_URL}/services`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.9,
+      alternates: { languages: languages('/services') },
+    },
   ]
 
   const categoryRoutes: MetadataRoute.Sitemap = categoriesRes.docs

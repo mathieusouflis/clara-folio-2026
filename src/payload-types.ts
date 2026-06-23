@@ -96,10 +96,12 @@ export interface Config {
   globals: {
     about: About;
     footer: Footer;
+    services: Service;
   };
   globalsSelect: {
     about: AboutSelect<false> | AboutSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
+    services: ServicesSelect<false> | ServicesSelect<true>;
   };
   locale: 'en' | 'fr';
   user: User;
@@ -550,6 +552,29 @@ export interface Footer {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "services".
+ */
+export interface Service {
+  id: number;
+  heroHeading?: string | null;
+  heroSubheading?: string | null;
+  intro?: string | null;
+  services?:
+    | {
+        title: string;
+        description?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  ctaHeading?: string | null;
+  email?: string | null;
+  metaTitle?: string | null;
+  metaDescription?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "about_select".
  */
 export interface AboutSelect<T extends boolean = true> {
@@ -624,6 +649,29 @@ export interface FooterSelect<T extends boolean = true> {
         url?: T;
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "services_select".
+ */
+export interface ServicesSelect<T extends boolean = true> {
+  heroHeading?: T;
+  heroSubheading?: T;
+  intro?: T;
+  services?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        id?: T;
+      };
+  ctaHeading?: T;
+  email?: T;
+  metaTitle?: T;
+  metaDescription?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
