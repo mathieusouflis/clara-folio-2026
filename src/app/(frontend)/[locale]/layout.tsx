@@ -72,10 +72,10 @@ export default async function LocaleLayout({
             <CustomCursor />
             <TransitionOverlay />
             <ReactLenis root />
-            <MainLayout>{children}<Time /></MainLayout>
+            <MainLayout>{children}</MainLayout>
           </TransitionProvider>
         </NextIntlClientProvider>
-
+        <Time />
       </body>
     </html>
   )

@@ -20,6 +20,6 @@ export function Time() {
   }, [])
 
   return (
-      <span className="absolute bottom-(--grid-margin) left-(--grid-margin) mix-blend-exclusion text-white">{time}</span>
+      <span className="fixed bottom-(--grid-margin) left-(--grid-margin) mix-blend-exclusion text-white">{time}</span>
   )
 }
