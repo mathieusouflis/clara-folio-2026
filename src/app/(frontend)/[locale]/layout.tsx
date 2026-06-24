@@ -12,6 +12,7 @@ import { TransitionProvider } from '@/components/layout/transition/TransitionPro
 import { TransitionOverlay } from '@/components/layout/transition/TransitionOverlay'
 import { CustomCursor } from '@/components/ui/cursor'
 import { routing } from '@/i18n/routing'
+import { Time } from '@/components/layout/time'
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://clarabaptista.com'),
@@ -71,9 +72,10 @@ export default async function LocaleLayout({
             <CustomCursor />
             <TransitionOverlay />
             <ReactLenis root />
-            <MainLayout>{children}</MainLayout>
+            <MainLayout>{children}<Time /></MainLayout>
           </TransitionProvider>
         </NextIntlClientProvider>
+
       </body>
     </html>
   )
