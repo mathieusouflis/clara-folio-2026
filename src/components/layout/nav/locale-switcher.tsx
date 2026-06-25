@@ -46,7 +46,7 @@ export function LocaleSwitcher({ className }: { className?: string }) {
       onClick={handleClick}
       className={cn(
         'relative inline-flex h-9 items-center justify-center overflow-hidden rounded-full',
-        'border border-white/40 px-3 text-[11px] font-bold uppercase tracking-widest text-white',
+        'border-2 border-white/40 px-3 text-[11px] font-bold uppercase tracking-widest text-white',
         'mix-blend-difference transition-colors duration-300 hover:border-white',
         className,
       )}

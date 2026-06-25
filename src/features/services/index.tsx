@@ -23,7 +23,7 @@ export async function ServicesPage() {
           className="flex flex-col justify-center pt-24 md:pt-0 md:col-start-2! md:col-end-11!"
         >
           <AnimatedSection y={20} duration={0.9} delay={0.3} mountOnly>
-            <h1 className="font-satoshi font-bold tracking-tight text-4xl md:text-5xl lg:text-6xl text-white">
+            <h1 className="font-poppins font-bold tracking-tight text-4xl md:text-5xl lg:text-6xl text-white">
               {services.heroHeading}
             </h1>
             {services.heroSubheading && (

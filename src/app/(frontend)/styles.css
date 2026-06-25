@@ -2,8 +2,8 @@
 
 /* Font Family Utilities */
 @layer utilities {
-  .font-satoshi {
-    font-family: var(--font-satoshi);
+  .font-poppins {
+    font-family: var(--font-poppins);
   }
 
   .font-aston-script {
@@ -17,7 +17,7 @@
 
 body {
   background-color: #0000ff;
-  font-family: var(--font-satoshi), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
 }
 
 .cursor-dot,

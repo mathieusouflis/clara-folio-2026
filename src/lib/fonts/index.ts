@@ -1,12 +1,17 @@
 import localFont from 'next/font/local'
 
 /**
- * Satoshi - Main sans-serif font used as the default body font throughout the app.
- * Variable font for optimal performance and flexibility
+ * Poppins - Main sans-serif font used as the default body font throughout the app.
  */
-export const satoshi = localFont({
-  src: '../../assets/fonts/Satoshi-Variable.woff2',
-  variable: '--font-satoshi',
+export const poppins = localFont({
+  src: [
+    { path: '../../assets/fonts/Poppins-Thin.woff', weight: '100', style: 'normal' },
+    { path: '../../assets/fonts/Poppins-Regular.woff', weight: '400', style: 'normal' },
+    { path: '../../assets/fonts/Poppins-Medium.woff', weight: '500', style: 'normal' },
+    { path: '../../assets/fonts/Poppins-SemiBold.woff', weight: '600', style: 'normal' },
+    { path: '../../assets/fonts/Poppins-Bold.woff', weight: '700', style: 'normal' },
+  ],
+  variable: '--font-poppins',
   preload: true,
   display: 'swap',
 })
@@ -23,10 +28,10 @@ export const astonScript = localFont({
   display: 'swap',
 })
 
-export const allFonts = [satoshi, astonScript]
+export const allFonts = [poppins, astonScript]
 
 export const fontVariables = {
-  satoshi: 'var(--font-satoshi)',
+  poppins: 'var(--font-poppins)',
   astonScript: 'var(--font-aston-script)',
 } as const
 
@@ -40,7 +45,7 @@ export const fontVariables = {
  */
 export function getFontClass(fontName: keyof typeof fontVariables): string {
   const fontMap = {
-    satoshi: satoshi.className,
+    poppins: poppins.className,
     astonScript: astonScript.className,
   }
   return fontMap[fontName]

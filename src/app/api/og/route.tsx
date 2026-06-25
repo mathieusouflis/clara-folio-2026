@@ -6,8 +6,8 @@ import sharp from 'sharp'
 export const runtime = 'nodejs'
 
 function loadFonts() {
-  const regular = fs.readFileSync(path.join(process.cwd(), 'public/fonts/Satoshi-Regular.otf'))
-  const bold = fs.readFileSync(path.join(process.cwd(), 'public/fonts/Satoshi-Bold.otf'))
+  const regular = fs.readFileSync(path.join(process.cwd(), 'public/fonts/Poppins-Regular.woff'))
+  const bold = fs.readFileSync(path.join(process.cwd(), 'public/fonts/Poppins-Bold.woff'))
   return { regular, bold }
 }
 
@@ -45,7 +45,7 @@ export async function GET(request: Request) {
         display: 'flex',
         flexDirection: 'row',
         backgroundColor: '#0000ff',
-        fontFamily: 'Satoshi',
+        fontFamily: 'Poppins',
       }}
     >
       {/* Left: branding + title */}
@@ -129,8 +129,8 @@ export async function GET(request: Request) {
       width: 1200,
       height: 630,
       fonts: [
-        { name: 'Satoshi', data: regular, style: 'normal', weight: 400 },
-        { name: 'Satoshi', data: bold, style: 'normal', weight: 700 },
+        { name: 'Poppins', data: regular, style: 'normal', weight: 400 },
+        { name: 'Poppins', data: bold, style: 'normal', weight: 700 },
       ],
     },
   )
