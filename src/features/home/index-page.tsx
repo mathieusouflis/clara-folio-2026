@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { gsap } from 'gsap'
 import { cn } from '@/lib/utils/cn'
 import { Grid, GridItem } from '@/components/layout/grid'
@@ -23,19 +23,21 @@ const colClass = (idx: number) =>
 
 export function HomePage({ projectsList }: { projectsList: Project[] }) {
   const containerRef = useRef<HTMLDivElement>(null)
-  const totalProjects = projectsList.length
 
-  while (projectsList.length < 24) {
-    const randomIndex = Math.floor(Math.random() * totalProjects)
-    projectsList.push({ ...projectsList[randomIndex] })
-  }
+  const projectsGroups = useMemo(() => {
+    if (projectsList.length === 0) return []
 
-  const projectsGroups: Project[][] = []
-  for (let i = 0; i < 6; i++) {
-    projectsGroups.push(
-      projectsList.slice((i * projectsList.length) / 6, ((i + 1) * projectsList.length) / 6),
-    )
-  }
+    const padded = [...projectsList]
+    while (padded.length < 24) {
+      padded.push({ ...projectsList[padded.length % projectsList.length] })
+    }
+
+    const groups: Project[][] = []
+    for (let i = 0; i < 6; i++) {
+      groups.push(padded.slice((i * padded.length) / 6, ((i + 1) * padded.length) / 6))
+    }
+    return groups
+  }, [projectsList])
 
   const speeds = [40, 60, 80, 90, 70, 50]
 

@@ -24,11 +24,15 @@ export function NavClient() {
   const linksRef = useRef<HTMLUListElement>(null)
   const hasOpened = useRef(false)
   const pathname = usePathname()
+  const [lastPathname, setLastPathname] = useState(pathname)
 
-  // Ferme le menu à chaque changement de page
-  useEffect(() => {
+  // Ferme le menu à chaque changement de page. Ajusté pendant le rendu plutôt
+  // que dans un useEffect : React relance le rendu immédiatement, sans passe
+  // de rendu supplémentaire committée.
+  if (lastPathname !== pathname) {
+    setLastPathname(pathname)
     setIsOpen(false)
-  }, [pathname])
+  }
 
   // Animation GSAP du menu
   useEffect(() => {

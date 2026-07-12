@@ -13,17 +13,19 @@ async function findCategory(slugOrId: string, locale?: Locale) {
   const payload = await getPayload({ config: payloadConfig })
 
   if (/^\d+$/.test(slugOrId)) {
+    let category
     try {
-      const category = await payload.findByID({
+      category = await payload.findByID({
         collection: 'categories',
         id: parseInt(slugOrId),
         ...(locale ? { locale } : {}),
       })
-      if (category?.slug) permanentRedirect(`/categories/${category.slug}`)
-      return category ?? null
     } catch {
       return null
     }
+    // permanentRedirect lève NEXT_REDIRECT : à garder hors du catch, qui l'avalerait
+    if (category?.slug) permanentRedirect(`/categories/${category.slug}`)
+    return category ?? null
   }
 
   const res = await payload.find({
@@ -72,10 +74,14 @@ export default async function Page({ params }: { params: Promise<{ categorySlug:
   const payload = await getPayload({ config: payloadConfig })
   const locale = (await getLocale()) as 'en' | 'fr'
 
-  try {
-    let category
+  const isNumericId = /^\d+$/.test(categorySlug)
+  let category
 
-    if (/^\d+$/.test(categorySlug)) {
+  // Le try/catch n'entoure que la récupération des données : construire le JSX
+  // à l'intérieur empêcherait le catch d'attraper quoi que ce soit (React rend
+  // les composants après coup) et avalerait le NEXT_REDIRECT de permanentRedirect.
+  try {
+    if (isNumericId) {
       category = await payload.findByID({
         collection: 'categories',
         id: parseInt(categorySlug),
@@ -84,7 +90,6 @@ export default async function Page({ params }: { params: Promise<{ categorySlug:
           projects: { image: true, name: true, releaseDate: true, slug: true },
         },
       })
-      if (category?.slug) permanentRedirect(`/categories/${category.slug}`)
     } else {
       const res = await payload.find({
         collection: 'categories',
@@ -97,45 +102,47 @@ export default async function Page({ params }: { params: Promise<{ categorySlug:
       })
       category = res.docs[0]
     }
-
-    if (!category) return <NotFoundPage />
-
-    const canonicalSlug = category.slug ?? String(category.id)
-    const categoryPath = `/categories/${canonicalSlug}`
-    const projectItems = ((category.relatedProjects ?? []) as (number | Project)[])
-      .filter((p): p is Project => typeof p === 'object' && Boolean(p.slug))
-      .map((p, i) => ({
-        '@type': 'ListItem' as const,
-        position: i + 1,
-        url: `${BASE_URL}/projects/${p.slug}`,
-        name: p.name,
-      }))
-
-    const jsonLd = graph(
-      {
-        '@type': 'CollectionPage',
-        name: category.categoryName,
-        url: `${BASE_URL}${locale === 'fr' ? '/fr' : ''}${categoryPath}`,
-        mainEntity: {
-          '@type': 'ItemList',
-          numberOfItems: projectItems.length,
-          itemListElement: projectItems,
-        },
-      },
-      breadcrumbList([
-        { name: 'Home', path: '/' },
-        { name: 'Projects', path: '/categories' },
-        { name: category.categoryName, path: categoryPath },
-      ]),
-    )
-
-    return (
-      <>
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
-        <ProjectListPage category={category} />
-      </>
-    )
   } catch {
     return <NotFoundPage />
   }
+
+  if (isNumericId && category?.slug) permanentRedirect(`/categories/${category.slug}`)
+
+  if (!category) return <NotFoundPage />
+
+  const canonicalSlug = category.slug ?? String(category.id)
+  const categoryPath = `/categories/${canonicalSlug}`
+  const projectItems = ((category.relatedProjects ?? []) as (number | Project)[])
+    .filter((p): p is Project => typeof p === 'object' && Boolean(p.slug))
+    .map((p, i) => ({
+      '@type': 'ListItem' as const,
+      position: i + 1,
+      url: `${BASE_URL}/projects/${p.slug}`,
+      name: p.name,
+    }))
+
+  const jsonLd = graph(
+    {
+      '@type': 'CollectionPage',
+      name: category.categoryName,
+      url: `${BASE_URL}${locale === 'fr' ? '/fr' : ''}${categoryPath}`,
+      mainEntity: {
+        '@type': 'ItemList',
+        numberOfItems: projectItems.length,
+        itemListElement: projectItems,
+      },
+    },
+    breadcrumbList([
+      { name: 'Home', path: '/' },
+      { name: 'Projects', path: '/categories' },
+      { name: category.categoryName, path: categoryPath },
+    ]),
+  )
+
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
+      <ProjectListPage category={category} />
+    </>
+  )
 }

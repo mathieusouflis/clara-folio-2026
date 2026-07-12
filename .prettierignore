@@ -1,0 +1,14 @@
+# Prettier respecte déjà .gitignore (node_modules, .next, ...).
+# Ne sont listés ici que les fichiers générés et versionnés : les reformater
+# créerait du bruit que la prochaine génération écraserait de toute façon.
+
+pnpm-lock.yaml
+
+# payload generate:types
+src/payload-types.ts
+
+# payload generate:importmap
+src/app/(payload)/admin/importMap.js
+
+# snapshots de migration drizzle
+src/migrations/*.json
