@@ -2,3 +2,5 @@ onlyBuiltDependencies:
   - sharp
   - esbuild
   - unrs-resolver
+  - '@sentry/cli'
+  - '@parcel/watcher'
