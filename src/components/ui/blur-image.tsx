@@ -4,13 +4,11 @@ import Image from 'next/image'
 import { useEffect, useRef } from 'react'
 import type { ComponentProps } from 'react'
 
+import { SERVER_URL } from '@/lib/server-url'
+
 type Props = ComponentProps<typeof Image> & {
   skeletonRatio?: number
 }
-
-// Doit rester aligné sur le serverURL de src/payload.config.ts : c'est l'origine
-// que Payload préfixe aux URLs de médias.
-const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://clarabaptista.com'
 
 // Payload renvoie des URLs de médias absolues. Les ramener à un chemin relatif
 // quand elles pointent vers notre propre origine : Next les traite alors comme

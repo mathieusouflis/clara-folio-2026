@@ -14,11 +14,10 @@ import { Footer } from './collections/Footer'
 import { Services } from './collections/Services'
 import { Redirects } from './collections/Redirects'
 import { seoPlugin } from '@payloadcms/plugin-seo'
+import { SERVER_URL as serverURL } from './lib/server-url'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
-
-const serverURL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://clarabaptista.com'
 
 export default buildConfig({
   serverURL,
