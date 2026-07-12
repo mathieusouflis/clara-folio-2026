@@ -2,12 +2,25 @@ import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { slugify, uniqueSlug } from '@/lib/slug'
 import { NextResponse } from 'next/server'
+import { timingSafeEqual } from 'crypto'
+
+/** Constant-time comparison that refuses to authorize when the secret is unset. */
+function isAuthorized(authHeader: string | null): boolean {
+  const secret = process.env.ADMIN_MIGRATE_SECRET
+  // Fail closed: without a configured secret the endpoint is never callable
+  // (otherwise `Bearer undefined` would authenticate).
+  if (!secret) return false
+  if (!authHeader) return false
+  const expected = Buffer.from(`Bearer ${secret}`)
+  const provided = Buffer.from(authHeader)
+  if (expected.length !== provided.length) return false
+  return timingSafeEqual(expected, provided)
+}
 
 // One-time migration: generate slugs for all projects and categories that lack one.
 // Hit POST /api/admin/generate-slugs (admin only).
 export async function POST(request: Request) {
-  const authHeader = request.headers.get('authorization')
-  if (authHeader !== `Bearer ${process.env.ADMIN_MIGRATE_SECRET}`) {
+  if (!isAuthorized(request.headers.get('authorization'))) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 

@@ -144,7 +144,20 @@ export function breadcrumbList(items: { name: string; path: string }[]) {
   }
 }
 
-/** Wrap nodes in a single @graph document. */
+/**
+ * Wrap nodes in a single @graph document.
+ *
+ * The result is injected via `dangerouslySetInnerHTML` into a <script> tag, so we
+ * escape the HTML-significant characters that `JSON.stringify` leaves untouched.
+ * Without this, a string containing `</script>` (e.g. from CMS-authored content)
+ * could break out of the tag and execute arbitrary JS (stored XSS). U+2028/U+2029
+ * are also escaped since they are invalid raw in a script context.
+ */
 export function graph(...nodes: object[]) {
   return JSON.stringify({ '@context': 'https://schema.org', '@graph': nodes })
+    .replace(/</g, '\\u003c')
+    .replace(/>/g, '\\u003e')
+    .replace(/&/g, '\\u0026')
+    .replace(/\u2028/g, '\\u2028')
+    .replace(/\u2029/g, '\\u2029')
 }

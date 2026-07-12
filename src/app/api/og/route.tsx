@@ -5,17 +5,54 @@ import sharp from 'sharp'
 
 export const runtime = 'nodejs'
 
+// SSRF guard: /api/og is a public, unauthenticated endpoint and `imageUrl` is
+// caller-controlled. Only allow fetching from our own origin(s), over https in
+// production, so the endpoint can't be used to probe internal services / cloud
+// metadata or act as an open image proxy.
+const ALLOWED_IMAGE_HOSTS = new Set(
+  [process.env.NEXT_PUBLIC_SERVER_URL, 'https://clarabaptista.com', 'http://localhost:3000']
+    .filter(Boolean)
+    .map((u) => {
+      try {
+        return new URL(u as string).host
+      } catch {
+        return null
+      }
+    })
+    .filter((h): h is string => Boolean(h)),
+)
+
+function isAllowedImageUrl(raw: string): boolean {
+  let url: URL
+  try {
+    url = new URL(raw)
+  } catch {
+    return false
+  }
+  if (url.protocol !== 'https:' && url.protocol !== 'http:') return false
+  if (url.protocol === 'http:' && url.hostname !== 'localhost') return false
+  return ALLOWED_IMAGE_HOSTS.has(url.host)
+}
+
 function loadFonts() {
   const regular = fs.readFileSync(path.join(process.cwd(), 'public/fonts/Poppins-Regular.woff'))
   const bold = fs.readFileSync(path.join(process.cwd(), 'public/fonts/Poppins-Bold.woff'))
   return { regular, bold }
 }
 
+const MAX_IMAGE_BYTES = 10 * 1024 * 1024 // 10 MB cap before handing to sharp
+
 async function fetchImageAsJpegDataUrl(imageUrl: string): Promise<string | null> {
   try {
-    const res = await fetch(imageUrl)
+    const res = await fetch(imageUrl, { signal: AbortSignal.timeout(5000) })
     if (!res.ok) return null
-    const buffer = Buffer.from(await res.arrayBuffer())
+    const contentType = res.headers.get('content-type')
+    if (contentType && !contentType.startsWith('image/')) return null
+    const contentLength = Number(res.headers.get('content-length'))
+    if (contentLength && contentLength > MAX_IMAGE_BYTES) return null
+    const arrayBuffer = await res.arrayBuffer()
+    if (arrayBuffer.byteLength > MAX_IMAGE_BYTES) return null
+    const buffer = Buffer.from(arrayBuffer)
     const jpeg = await sharp(buffer)
       .resize(480, 480, { fit: 'contain', background: { r: 0, g: 0, b: 255, alpha: 1 } })
       .jpeg({ quality: 85 })
@@ -34,7 +71,10 @@ export async function GET(request: Request) {
 
   const { regular, bold } = loadFonts()
 
-  const imageSrc = rawImageUrl ? await fetchImageAsJpegDataUrl(rawImageUrl) : null
+  const imageSrc =
+    rawImageUrl && isAllowedImageUrl(rawImageUrl)
+      ? await fetchImageAsJpegDataUrl(rawImageUrl)
+      : null
   const hasImage = Boolean(imageSrc)
 
   return new ImageResponse(
