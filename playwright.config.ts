@@ -18,7 +18,9 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
+  reporter: process.env.CI ? [['list'], ['html', { open: 'never' }]] : 'html',
+  /* Payload compiles routes on first hit, so a cold run needs more headroom. */
+  timeout: process.env.CI ? 60_000 : 30_000,
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
@@ -35,7 +37,9 @@ export default defineConfig({
   ],
   webServer: {
     command: 'pnpm dev',
-    reuseExistingServer: true,
+    reuseExistingServer: !process.env.CI,
     url: 'http://localhost:3000',
+    /* A cold Payload dev boot in CI regularly exceeds the 60s default. */
+    timeout: 180_000,
   },
 })
