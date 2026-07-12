@@ -6,7 +6,10 @@ import type { ComponentProps } from 'react'
 import { Link as IntlLink } from '@/i18n/navigation'
 import { usePageTransition } from './TransitionProvider'
 
-type TransitionLinkProps = ComponentProps<typeof NextLink>
+// next/link accepts a wider `prefetch` than the locale-aware Link does
+// (`unstable_forceStale`), so take the narrower one to keep both spreads valid.
+type TransitionLinkProps = Omit<ComponentProps<typeof NextLink>, 'prefetch'> &
+  Pick<ComponentProps<typeof IntlLink>, 'prefetch'>
 
 export function TransitionLink({
   href,

@@ -7,14 +7,15 @@ import { AnimatedSection } from '@/components/ui/animated-section'
 import type { Project } from '@/payload-types'
 
 export const ProjectSection = (props: { content: NonNullable<Project['content']> }) => {
-  if (!props.content[0]) return null
   const content = props.content[0]
   const contentImages =
-    content.images && typeof content.images === 'object'
+    content?.images && typeof content.images === 'object'
       ? content.images.filter((i) => typeof i !== 'number')
       : []
 
   const [currentImage, setCurrentImage] = useState(contentImages[0] ? contentImages[0] : undefined)
+
+  if (!content) return null
 
   return (
     <Grid key={content.id} as="section" id={content.id ?? ''}>
