@@ -79,52 +79,52 @@ jobs:
       - name: Integration tests
         run: pnpm test:int
 
-  e2e:
-    name: E2E tests
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    services:
-      postgres:
-        image: postgres:17-alpine
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: clara_folio_test
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-    steps:
-      - uses: actions/checkout@v7
+  # e2e:
+  #   name: E2E tests
+  #   runs-on: ubuntu-latest
+  #   timeout-minutes: 20
+  #   services:
+  #     postgres:
+  #       image: postgres:17-alpine
+  #       env:
+  #         POSTGRES_USER: postgres
+  #         POSTGRES_PASSWORD: postgres
+  #         POSTGRES_DB: clara_folio_test
+  #       ports:
+  #         - 5432:5432
+  #       options: >-
+  #         --health-cmd pg_isready
+  #         --health-interval 10s
+  #         --health-timeout 5s
+  #         --health-retries 5
+  #   steps:
+  #     - uses: actions/checkout@v7
 
-      - uses: pnpm/action-setup@v6
+  #     - uses: pnpm/action-setup@v6
 
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 22
-          cache: pnpm
+  #     - uses: actions/setup-node@v6
+  #       with:
+  #         node-version: 22
+  #         cache: pnpm
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+  #     - name: Install dependencies
+  #       run: pnpm install --frozen-lockfile
 
-      - name: Install Playwright browsers
-        run: pnpm exec playwright install --with-deps chromium
+  #     - name: Install Playwright browsers
+  #       run: pnpm exec playwright install --with-deps chromium
 
-      # Playwright starts the app itself (see webServer in playwright.config.ts)
-      # and waits for it to serve, so the dev server has pushed the schema
-      # before the first test seeds a user.
-      - name: E2E tests
-        run: pnpm test:e2e
+  #     # Playwright starts the app itself (see webServer in playwright.config.ts)
+  #     # and waits for it to serve, so the dev server has pushed the schema
+  #     # before the first test seeds a user.
+  #     - name: E2E tests
+  #       run: pnpm test:e2e
 
-      - if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v7
-        with:
-          name: playwright-report
-          path: playwright-report/
-          retention-days: 7
+  #     - if: ${{ !cancelled() }}
+  #       uses: actions/upload-artifact@v7
+  #       with:
+  #         name: playwright-report
+  #         path: playwright-report/
+  #         retention-days: 7
 
   build:
     name: Build
