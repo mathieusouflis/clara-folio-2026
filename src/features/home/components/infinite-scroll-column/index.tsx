@@ -29,9 +29,7 @@ export function InfiniteScrollColumn({
   const trackRef = useRef<HTMLDivElement>(null)
   const tweenRef = useRef<gsap.core.Tween | null>(null)
   const [isReady, setIsReady] = useState(false)
-  const randomOffsetRef = useRef<number>(
-    initialOffset !== undefined ? initialOffset : Math.random(),
-  )
+  const randomOffsetRef = useRef<number | null>(null)
 
   const getDisplayItems = useCallback(() => {
     if (projects.length === 0) return []
@@ -92,9 +90,13 @@ export function InfiniteScrollColumn({
       },
     })
 
+    if (randomOffsetRef.current === null) {
+      randomOffsetRef.current = initialOffset !== undefined ? initialOffset : Math.random()
+    }
+
     tweenRef.current.progress(randomOffsetRef.current)
     setIsReady(true)
-  }, [projects, direction, speed, gap])
+  }, [projects, direction, speed, gap, initialOffset])
 
   useEffect(() => {
     const initTimeout = setTimeout(() => {

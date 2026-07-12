@@ -8,6 +8,26 @@ type Props = ComponentProps<typeof Image> & {
   skeletonRatio?: number
 }
 
+// Doit rester aligné sur le serverURL de src/payload.config.ts : c'est l'origine
+// que Payload préfixe aux URLs de médias.
+const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://clarabaptista.com'
+
+// Payload renvoie des URLs de médias absolues. Les ramener à un chemin relatif
+// quand elles pointent vers notre propre origine : Next les traite alors comme
+// des images locales, sans aller les rechercher en HTTP auprès de lui-même.
+// C'est aussi ce qui évite le blocage des IP privées de l'optimiseur (Next 16),
+// qui rejette http://localhost:3000/... en développement.
+function toSameOriginPath(src: Props['src']): Props['src'] {
+  if (typeof src !== 'string') return src
+  try {
+    const url = new URL(src, SERVER_URL)
+    if (url.origin !== new URL(SERVER_URL).origin) return src
+    return `${url.pathname}${url.search}`
+  } catch {
+    return src
+  }
+}
+
 export function BlurImage({ skeletonRatio, ...props }: Props) {
   const imgRef = useRef<HTMLImageElement>(null)
   const skeletonRef = useRef<HTMLDivElement>(null)
@@ -48,7 +68,7 @@ export function BlurImage({ skeletonRatio, ...props }: Props) {
   return (
     <div style={wrapperStyle}>
       <div ref={skeletonRef} className="blur-image-skeleton absolute inset-0 z-10" />
-      <Image ref={imgRef} {...props} />
+      <Image ref={imgRef} {...props} src={toSameOriginPath(props.src)} />
     </div>
   )
 }
