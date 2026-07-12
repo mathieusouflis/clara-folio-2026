@@ -73,11 +73,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # Applies src/migrations from scratch, so a broken migration fails CI
-      # rather than the next deploy.
-      - name: Run migrations
-        run: pnpm payload migrate
-
+      # No migrate step: the migration baseline is a no-op and cannot build a
+      # DB from scratch. Payload pushes the schema on init outside production,
+      # which is what getPayload() in the tests does.
       - name: Integration tests
         run: pnpm test:int
 
@@ -115,12 +113,9 @@ jobs:
       - name: Install Playwright browsers
         run: pnpm exec playwright install --with-deps chromium
 
-      # Seeding (tests/helpers) and the dev server both open Payload
-      # connections; migrating first means neither has to create the schema.
-      - name: Run migrations
-        run: pnpm payload migrate
-
-      # Playwright starts the app itself (see webServer in playwright.config.ts).
+      # Playwright starts the app itself (see webServer in playwright.config.ts)
+      # and waits for it to serve, so the dev server has pushed the schema
+      # before the first test seeds a user.
       - name: E2E tests
         run: pnpm test:e2e
 
@@ -162,8 +157,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Run migrations
-        run: pnpm payload migrate
+      # src/app/sitemap.ts queries Payload, so `next build` needs real tables.
+      # The build runs in production mode (no schema push), so create the
+      # schema first — see the script for why `payload migrate` can't do this.
+      - name: Push database schema
+        run: pnpm payload run src/scripts/push-schema.ts
 
       # No SENTRY_AUTH_TOKEN in forks/PRs — the Sentry plugin skips the
       # source-map upload and the build still succeeds.
