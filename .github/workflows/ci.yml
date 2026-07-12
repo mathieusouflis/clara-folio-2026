@@ -110,6 +110,14 @@ jobs:
   #     - name: Install dependencies
   #       run: pnpm install --frozen-lockfile
 
+  #     # Skips re-downloading the browser (~100MB) when the lockfile — and so
+  #     # the pinned Playwright version — hasn't changed.
+  #     - name: Cache Playwright browsers
+  #       uses: actions/cache@v6
+  #       with:
+  #         path: ~/.cache/ms-playwright
+  #         key: playwright-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+
   #     - name: Install Playwright browsers
   #       run: pnpm exec playwright install --with-deps chromium
 
@@ -156,6 +164,17 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      # Lets Next reuse compiled modules across runs. The key falls back to any
+      # cache built from the same lockfile, so a source-only change still gets a
+      # warm cache instead of a cold rebuild.
+      - name: Cache Next.js build
+        uses: actions/cache@v6
+        with:
+          path: .next/cache
+          key: nextjs-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('src/**/*.ts', 'src/**/*.tsx', 'next.config.mjs') }}
+          restore-keys: |
+            nextjs-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-
 
       # src/app/sitemap.ts queries Payload, so `next build` needs real tables.
       # The build runs in production mode (no schema push), so create the
