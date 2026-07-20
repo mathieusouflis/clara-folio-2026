@@ -4,6 +4,11 @@ import config from '@/payload.config'
 
 const BASE_URL = 'https://clarabaptista.com'
 
+// The sitemap reads projects and categories from Payload, so it cannot be
+// prerendered: the database is unreachable during the Docker build. Rendering
+// on demand also means new content appears without a rebuild.
+export const dynamic = 'force-dynamic'
+
 // Reciprocal + self-referencing hreflang. Listing only `fr` (without an `en`
 // self-reference and `x-default`) breaks the cluster and Google ignores it.
 function languages(enPath: string) {
