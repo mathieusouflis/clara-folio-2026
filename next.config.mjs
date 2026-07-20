@@ -34,6 +34,13 @@ const nextConfig = {
       },
     ]
   },
+  // Payload uses sharp for image processing. Next's tracer picks up the
+  // @img/sharp-<platform> binding but not the sibling @img/sharp-libvips-<platform>
+  // package that holds libvips-cpp.so, so the standalone output ships a binding
+  // that fails to dlopen at runtime. Force both into the trace.
+  outputFileTracingIncludes: {
+    '**': ['./node_modules/.pnpm/@img+*/node_modules/@img/**'],
+  },
   experimental: {
     serverActions: {
       bodySizeLimit: '50mb',

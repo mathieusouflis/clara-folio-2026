@@ -16,6 +16,7 @@ import { Redirects } from './collections/Redirects'
 import { seoPlugin } from '@payloadcms/plugin-seo'
 import { s3Storage } from '@payloadcms/storage-s3'
 import { SERVER_URL as serverURL } from './lib/server-url'
+import { migrations } from './migrations'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -45,6 +46,11 @@ export default buildConfig({
     pool: {
       connectionString: process.env.DATABASE_URL || '',
     },
+    // The production image ships only the Next standalone output, so there is no
+    // Payload CLI to run `payload migrate` with. Passing the migrations here makes
+    // Payload apply pending ones during init instead, which is what bootstraps a
+    // freshly-provisioned Dokploy Postgres.
+    prodMigrations: migrations,
   }),
   sharp,
   plugins: [
