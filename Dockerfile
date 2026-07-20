@@ -51,9 +51,8 @@ RUN adduser --system --uid 1001 nextjs
 # Remove this line if you do not have this folder
 COPY --from=builder /app/public ./public
 
-# Create media directory for Payload uploads
-RUN mkdir -p ./media
-RUN chown nextjs:nodejs ./media
+# Uploads are stored in the RustFS bucket (see @payloadcms/storage-s3 config),
+# not on this container's filesystem, so no local media directory is needed.
 
 # Set the correct permission for prerender cache
 RUN mkdir .next

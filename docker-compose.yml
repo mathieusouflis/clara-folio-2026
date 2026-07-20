@@ -1,43 +1,48 @@
-version: '3'
+version: '3.9'
+
+# Local-dev mirror of the production services. Dokploy provisions Postgres and
+# RustFS as independent managed resources in production (see
+# docs/adr/0001-self-hosted-postgres-and-blob-storage.md) — this file is NOT what
+# gets deployed, it just lets you develop against the real thing locally instead
+# of pointing at Neon/production storage.
+#
+# Usage:
+#   docker-compose up -d
+#   Then open http://localhost:9001 (RustFS console) and create a "media" bucket
+#   with public read access, matching what you'd set up in Dokploy.
+#   Point your .env at the values below (see .env.example).
 
 services:
-  payload:
-    image: node:18-alpine
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: payload
+      POSTGRES_PASSWORD: payload
+      POSTGRES_DB: payload
     ports:
-      - '3000:3000'
+      - '5432:5432'
     volumes:
-      - .:/home/node/app
-      - node_modules:/home/node/app/node_modules
-    working_dir: /home/node/app/
-    command: sh -c "corepack enable && corepack prepare pnpm@latest --activate && pnpm install && pnpm dev"
-    # depends_on:
-    # - mongo
-    # - postgres
-    env_file:
-      - .env
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U payload']
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
-  # Ensure your DATABASE_URL uses 'mongo' as the hostname ie. mongodb://mongo/my-db-name
-  # mongo:
-  #   image: mongo:latest
-  #   ports:
-  #     - '27017:27017'
-  #   command:
-  #     - --storageEngine=wiredTiger
-  #   volumes:
-  #     - data:/data/db
-  #   logging:
-  #     driver: none
-
-  # Uncomment the following to use postgres
-  # postgres:
-  #   restart: always
-  #   image: postgres:latest
-  #   volumes:
-  #     - pgdata:/var/lib/postgresql/data
-  #   ports:
-  #     - "5432:5432"
+  rustfs:
+    image: rustfs/rustfs:latest
+    restart: unless-stopped
+    environment:
+      RUSTFS_ACCESS_KEY: rustfsadmin
+      RUSTFS_SECRET_KEY: rustfsadmin
+      RUSTFS_CONSOLE_ENABLE: 'true'
+    ports:
+      - '9000:9000' # S3 API
+      - '9001:9001' # Web console
+    volumes:
+      - rustfsdata:/data
 
 volumes:
-  data:
-  # pgdata:
-  node_modules:
+  pgdata:
+  rustfsdata:

@@ -14,6 +14,7 @@ import { Footer } from './collections/Footer'
 import { Services } from './collections/Services'
 import { Redirects } from './collections/Redirects'
 import { seoPlugin } from '@payloadcms/plugin-seo'
+import { s3Storage } from '@payloadcms/storage-s3'
 import { SERVER_URL as serverURL } from './lib/server-url'
 
 const filename = fileURLToPath(import.meta.url)
@@ -59,6 +60,24 @@ export default buildConfig({
         if (collectionConfig?.slug === 'projects')
           return `${baseURL}/projects/${doc.slug ?? doc.id}`
         return baseURL
+      },
+    }),
+    s3Storage({
+      collections: {
+        media: {
+          disablePayloadAccessControl: true,
+          generateFileURL: ({ filename }) => `${process.env.S3_PUBLIC_URL}/${filename}`,
+        },
+      },
+      bucket: process.env.S3_BUCKET || '',
+      config: {
+        region: process.env.S3_REGION || 'auto',
+        endpoint: process.env.S3_ENDPOINT,
+        forcePathStyle: true,
+        credentials: {
+          accessKeyId: process.env.S3_ACCESS_KEY_ID || '',
+          secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || '',
+        },
       },
     }),
   ],
