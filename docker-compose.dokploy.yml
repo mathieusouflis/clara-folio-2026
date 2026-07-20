@@ -1,38 +1,18 @@
-# Backing services as deployed on Dokploy (Postgres + RustFS).
+# RustFS as deployed on Dokploy.
+#
+# Postgres is deliberately absent: it's provisioned as a Dokploy managed database
+# resource so it inherits Dokploy's scheduled backups (see the runbook's backup
+# step). Dokploy has no managed equivalent for RustFS, hence this file.
 #
 # This is the counterpart to docker-compose.yml, which stays a local-dev mirror.
 # The two differ in ways that matter:
-#   - services join the shared `dokploy-network` so the separately-deployed
-#     frontend app can resolve them by hostname
-#   - no ports are published to the host; Postgres stays reachable only from
-#     inside the network, and RustFS is exposed through a Dokploy domain instead
+#   - the service joins the shared `dokploy-network` so the separately-deployed
+#     frontend app can resolve it by hostname
+#   - no ports are published to the host; RustFS is exposed through a Dokploy
+#     domain instead, because the browser has to reach it for media
 #   - credentials come from the environment, not hardcoded defaults
-#
-# Deploy this as a Docker Compose application in Dokploy, and set the frontend
-# app's DATABASE_URL / S3_ENDPOINT to the aliases below.
 
 services:
-  postgres:
-    image: postgres:17-alpine
-    restart: unless-stopped
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-    healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER}']
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    networks:
-      dokploy-network:
-        # `postgres` alone would collide with every other project on the shared
-        # network, so the frontend addresses this host as `clara-postgres`.
-        aliases:
-          - clara-postgres
-
   rustfs:
     image: rustfs/rustfs:latest
     restart: unless-stopped
@@ -48,7 +28,6 @@ services:
           - clara-rustfs
 
 volumes:
-  pgdata:
   rustfsdata:
 
 # Created by Dokploy itself — declared external so compose attaches to it
