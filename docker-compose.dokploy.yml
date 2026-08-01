@@ -1,0 +1,37 @@
+# RustFS as deployed on Dokploy.
+#
+# Postgres is deliberately absent: it's provisioned as a Dokploy managed database
+# resource so it inherits Dokploy's scheduled backups (see the runbook's backup
+# step). Dokploy has no managed equivalent for RustFS, hence this file.
+#
+# This is the counterpart to docker-compose.yml, which stays a local-dev mirror.
+# The two differ in ways that matter:
+#   - the service joins the shared `dokploy-network` so the separately-deployed
+#     frontend app can resolve it by hostname
+#   - no ports are published to the host; RustFS is exposed through a Dokploy
+#     domain instead, because the browser has to reach it for media
+#   - credentials come from the environment, not hardcoded defaults
+
+services:
+  rustfs:
+    image: rustfs/rustfs:latest
+    restart: unless-stopped
+    environment:
+      RUSTFS_ACCESS_KEY: ${RUSTFS_ACCESS_KEY}
+      RUSTFS_SECRET_KEY: ${RUSTFS_SECRET_KEY}
+      RUSTFS_CONSOLE_ENABLE: 'true'
+    volumes:
+      - rustfsdata:/data
+    networks:
+      dokploy-network:
+        aliases:
+          - clara-rustfs
+
+volumes:
+  rustfsdata:
+
+# Created by Dokploy itself — declared external so compose attaches to it
+# rather than trying to manage it.
+networks:
+  dokploy-network:
+    external: true
