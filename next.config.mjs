@@ -4,21 +4,25 @@ import createNextIntlPlugin from 'next-intl/plugin'
 
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts')
 
+// Media is served straight from the S3-compatible bucket (RustFS), not proxied
+// through Payload, so Next/Image needs that host allow-listed too.
+const s3PublicUrl = process.env.S3_PUBLIC_URL ? new URL(process.env.S3_PUBLIC_URL) : null
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
   images: {
     remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'clarabaptista.com',
-        pathname: '/api/media/file/**',
-      },
-      {
-        protocol: 'http',
-        hostname: 'localhost',
-        pathname: '/api/media/file/**',
-      },
+      ...(s3PublicUrl
+        ? [
+            {
+              protocol: s3PublicUrl.protocol.replace(':', ''),
+              hostname: s3PublicUrl.hostname,
+              port: s3PublicUrl.port || undefined,
+              pathname: '/**',
+            },
+          ]
+        : []),
     ],
   },
   async redirects() {
@@ -29,6 +33,13 @@ const nextConfig = {
         permanent: true,
       },
     ]
+  },
+  // Payload uses sharp for image processing. Next's tracer picks up the
+  // @img/sharp-<platform> binding but not the sibling @img/sharp-libvips-<platform>
+  // package that holds libvips-cpp.so, so the standalone output ships a binding
+  // that fails to dlopen at runtime. Force both into the trace.
+  outputFileTracingIncludes: {
+    '**': ['./node_modules/.pnpm/@img+*/node_modules/@img/**'],
   },
   experimental: {
     serverActions: {
