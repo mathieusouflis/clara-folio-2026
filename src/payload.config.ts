@@ -45,7 +45,15 @@ export default buildConfig({
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URL || '',
+      connectionTimeoutMillis: 10_000,
+      statement_timeout: 15_000,
     },
+    // Dev-mode schema push must never run against production: if it ever detects
+    // drift there (e.g. a local .env accidentally pointed at the prod DB), Payload
+    // shows an interactive confirmation prompt expecting a TTY. The standalone
+    // Docker container has none, so getPayload() — and every route that awaits it —
+    // hangs forever instead of erroring. This happened on 2026-08-08.
+    push: process.env.NODE_ENV !== 'production',
     // The production image ships only the Next standalone output, so there is no
     // Payload CLI to run `payload migrate` with. Passing the migrations here makes
     // Payload apply pending ones during init instead, which is what bootstraps a
