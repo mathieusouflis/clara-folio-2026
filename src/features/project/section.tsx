@@ -30,7 +30,7 @@ export const ProjectSection = (props: { content: NonNullable<Project['content']>
               <div className="flex flex-col gap-4 mt-12">
                 {Array.isArray(content.contentDescription) &&
                   content.contentDescription.map((item) => (
-                    <p key={item.id} className="opacity-80 font-medium text-white text-5">
+                    <p key={item.id} className="opacity-80 font-medium text-white text-5 whitespace-pre-line">
                       {item.text}
                     </p>
                   ))}

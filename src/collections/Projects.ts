@@ -19,7 +19,6 @@ export const Projects: CollectionConfig = {
     beforeValidate: [
       async ({ data, req, operation, originalDoc }) => {
         if (!data) return data
-        if ((req.locale ?? 'en') !== 'en') return data
         if (!data.slug && data.name) {
           const base = slugify(data.name)
           data.slug = await uniqueSlug(
@@ -99,17 +98,28 @@ export const Projects: CollectionConfig = {
           }
         }
       },
-      async ({ doc, req, operation }) => {
-        // revalidatePath throws outside a Next.js request context (e.g. scripts,
-        // programmatic local-API calls). Guard it so it can't abort the transaction.
+      async ({ doc, req, context }) => {
+        if (context?.skipTrigger) return doc
+
         try {
           revalidatePath('/categories')
         } catch {
-          // not in a request context; nothing to revalidate
         }
 
-        // Auto-translate to French when saving English content
-        if (req.locale === 'en' && process.env.DEEPL_API_KEY) {
+        const currentLocale = req.locale ?? 'en'
+
+        let targetLocale: 'fr' | 'en' | null = null
+        let targetLang: 'FR' | 'EN-US' | null = null
+
+        if (currentLocale === 'en') {
+          targetLocale = 'fr'
+          targetLang = 'FR'
+        } else if (currentLocale === 'fr') {
+          targetLocale = 'en'
+          targetLang = 'EN-US'
+        }
+
+        if (targetLocale && targetLang && process.env.DEEPL_API_KEY) {
           try {
             const textsToTranslate: string[] = []
             textsToTranslate.push(doc.name ?? '')
@@ -121,12 +131,12 @@ export const Projects: CollectionConfig = {
             )
             textsToTranslate.push(...contentTitles, ...contentTexts)
 
-            const translated = await translateTexts(textsToTranslate, 'FR')
+            const translated = await translateTexts(textsToTranslate, targetLang)
 
             let idx = 0
-            const frName = translated[idx++]
-            const frDescription = translated[idx++]
-            const frContent = (doc.content ?? []).map((section: any) => ({
+            const translatedName = translated[idx++]
+            const translatedDescription = translated[idx++]
+            const translatedContent = (doc.content ?? []).map((section: any) => ({
               ...section,
               title: translated[idx++],
               contentDescription: (section.contentDescription ?? []).map((d: any) => ({
@@ -138,13 +148,17 @@ export const Projects: CollectionConfig = {
             await req.payload.update({
               collection: 'projects',
               id: doc.id,
-              locale: 'fr',
+              locale: targetLocale,
               data: {
-                name: frName,
-                description: frDescription,
-                content: frContent,
+                name: translatedName,
+                description: translatedDescription,
+                content: translatedContent,
               },
               req,
+              context: {
+                ...context,
+                skipTrigger: true, // Prevents infinite recursion loop
+              },
             })
           } catch (err) {
             console.error('DeepL auto-translation failed:', err)
@@ -218,7 +232,7 @@ export const Projects: CollectionConfig = {
           fields: [
             {
               name: 'text',
-              type: 'text',
+              type: 'textarea',
               required: true,
               localized: true,
             },
