@@ -125,11 +125,12 @@ export const Projects: CollectionConfig = {
             textsToTranslate.push(doc.name ?? '')
             textsToTranslate.push(doc.description ?? '')
 
-            const contentTitles = (doc.content ?? []).map((s: any) => s.title ?? '')
-            const contentTexts = (doc.content ?? []).flatMap((s: any) =>
-              (s.contentDescription ?? []).map((d: any) => d.text ?? ''),
-            )
-            textsToTranslate.push(...contentTitles, ...contentTexts)
+            for (const section of doc.content ?? []) {
+              textsToTranslate.push(section.title ?? '')
+              for (const d of section.contentDescription ?? []) {
+                textsToTranslate.push(d.text ?? '')
+              }
+            }
 
             const translated = await translateTexts(textsToTranslate, targetLang)
 
