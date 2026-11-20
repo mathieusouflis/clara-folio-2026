@@ -40,6 +40,9 @@ jobs:
       - name: Lint
         run: pnpm lint
 
+      - name: Security audit
+        run: pnpm audit:security
+
       - name: Type-check
         run: pnpm typecheck
 
