@@ -13,6 +13,7 @@ import * as migration_20260623_localize_category_name from './20260623_localize_
 import * as migration_20260623_add_media_caption from './20260623_add_media_caption'
 import * as migration_20260623_add_services_global from './20260623_add_services_global'
 import * as migration_20261120_payload_3_90 from './20261120_payload_3_90'
+import * as migration_20261120_fix_media_object_key from './20261120_fix_media_object_key'
 
 export const migrations = [
   {
@@ -89,5 +90,10 @@ export const migrations = [
     up: migration_20261120_payload_3_90.up,
     down: migration_20261120_payload_3_90.down,
     name: '20261120_payload_3_90',
+  },
+  {
+    up: migration_20261120_fix_media_object_key.up,
+    down: migration_20261120_fix_media_object_key.down,
+    name: '20261120_fix_media_object_key',
   },
 ]
