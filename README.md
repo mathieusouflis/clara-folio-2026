@@ -31,6 +31,19 @@ See the [Collections](https://payloadcms.com/docs/configuration/collections) doc
 
 Deployed on Dokploy: the app as its own Dockerfile-based application, Postgres and RustFS as separate managed Dokploy resources. See [docs/migrations/neon-to-dokploy-postgres.md](./docs/migrations/neon-to-dokploy-postgres.md) for the Neon → Dokploy Postgres cutover runbook.
 
+## Dependency security
+
+Run `pnpm audit:security` to check dependencies; CI blocks moderate, high, and critical findings.
+The security overrides in `pnpm-workspace.yaml` patch pinned transitive dependencies while
+keeping Payload at the tested schema version. Recheck those overrides when updating their parents.
+
+Payload UI bundles its own Monaco CDN loader. The patch in `patches/` updates that loader
+to Monaco 0.57.0, matching the installed editor, so the browser also receives the updated
+sanitizer. Keep the patch and installed editor version in sync when updating Payload.
+Monaco 0.57.0 still vendors DOMPurify 3.4.15, which has five low-severity advisories as of
+2026-11-20. These remain visible in audits pending an upstream editor release with a
+patched sanitizer; they are not suppressed or fixed by overriding DOMPurify alone.
+
 ## Questions
 
 If you have any issues or questions, reach out to us on [Discord](https://discord.com/invite/payload) or start a [GitHub discussion](https://github.com/payloadcms/payload/discussions).

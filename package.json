@@ -5,6 +5,7 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
+    "audit:security": "pnpm audit --audit-level=moderate",
     "build": "cross-env NODE_OPTIONS=\"--no-deprecation --max-old-space-size=8000\" next build",
     "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
     "devsafe": "rm -rf .next && cross-env NODE_OPTIONS=--no-deprecation next dev",
@@ -67,13 +68,15 @@
     "eslint-plugin-react-hooks": "^5.0.0",
     "jsdom": "30.0.1",
     "mime-types": "^3.0.2",
+    "monaco-editor": "0.57.0",
     "playwright": "1.63.0",
     "playwright-core": "1.63.0",
     "prettier": "^3.9.9",
     "tsx": "4.23.15",
     "typescript": "5.9.3",
+    "vite": "7.3.8",
     "vite-tsconfig-paths": "6.1.1",
-    "vitest": "4.1.11"
+    "vitest": "4.1.12"
   },
   "engines": {
     "node": "^22.22.2 || ^24.15.0 || >=26.0.0",
