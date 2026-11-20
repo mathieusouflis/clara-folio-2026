@@ -6,6 +6,8 @@ import { defineConfig, devices } from '@playwright/test'
  */
 import 'dotenv/config'
 
+const useProductionServer = process.env.PLAYWRIGHT_USE_PRODUCTION === 'true'
+
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
@@ -36,8 +38,8 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'pnpm dev',
-    reuseExistingServer: !process.env.CI,
+    command: useProductionServer ? 'pnpm start' : 'pnpm dev',
+    reuseExistingServer: !process.env.CI && !useProductionServer,
     url: 'http://localhost:3000',
     /* A cold Payload dev boot in CI regularly exceeds the 60s default. */
     timeout: 180_000,

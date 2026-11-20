@@ -138,6 +138,8 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     needs: [quality, test]
+    env:
+      S3_PUBLIC_URL: http://localhost:3000
     services:
       postgres:
         image: postgres:17-alpine
@@ -188,3 +190,16 @@ jobs:
         run: pnpm build
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+
+      - name: Prepare production homepage fixture
+        run: pnpm payload run src/scripts/prepare-production-test.ts
+        env:
+          NODE_ENV: test
+
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Production homepage smoke test
+        run: pnpm test:e2e tests/e2e/home.e2e.spec.ts
+        env:
+          PLAYWRIGHT_USE_PRODUCTION: 'true'
